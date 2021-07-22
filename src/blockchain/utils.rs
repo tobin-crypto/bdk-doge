@@ -292,6 +292,7 @@ pub trait ElectrumLikeSync {
     }
 }
 
+#[allow(dead_code)]
 fn save_transaction_details_and_utxos<D: BatchDatabase>(
     txid: &Txid,
     db: &mut D,
@@ -369,6 +370,7 @@ fn save_transaction_details_and_utxos<D: BatchDatabase>(
 
 /// returns utxo dependency as the inputs needed for the utxo to exist
 /// `tx_raw_in_db` must contains utxo's generating txs or errors witt [crate::Error::TransactionNotFound]
+#[allow(dead_code)]
 fn utxos_deps<D: BatchDatabase>(
     db: &mut D,
     tx_raw_in_db: &HashMap<Txid, Transaction>,

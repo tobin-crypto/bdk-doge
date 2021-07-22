@@ -13,7 +13,7 @@ use crate::database::BatchDatabase;
 use crate::error::Error;
 use crate::FeeRate;
 
-const DEFAULT_CONCURRENT_REQUESTS: u8 = 4;
+// const DEFAULT_CONCURRENT_REQUESTS: u8 = 4;
 
 #[derive(Debug)]
 struct UrlClient {}
@@ -26,7 +26,7 @@ pub struct TodoBlockchain {}
 
 impl TodoBlockchain {
     /// Create a new instance of the client from a base URL
-    pub fn new(base_url: &str) -> Self {
+    pub fn new(_base_url: &str) -> Self {
         todo!()
     }
 }
@@ -45,17 +45,17 @@ impl Blockchain for TodoBlockchain {
 
     fn setup<D: BatchDatabase, P: Progress>(
         &self,
-        database: &mut D,
-        progress_update: P,
+        _database: &mut D,
+        _progress_update: P,
     ) -> Result<(), Error> {
         todo!()
     }
 
-    fn get_tx(&self, txid: &Txid) -> Result<Option<Transaction>, Error> {
+    fn get_tx(&self, _txid: &Txid) -> Result<Option<Transaction>, Error> {
         todo!()
     }
 
-    fn broadcast(&self, tx: &Transaction) -> Result<(), Error> {
+    fn broadcast(&self, _tx: &Transaction) -> Result<(), Error> {
         todo!()
     }
 
@@ -63,29 +63,30 @@ impl Blockchain for TodoBlockchain {
         todo!()
     }
 
-    fn estimate_fee(&self, target: usize) -> Result<FeeRate, Error> {
+    fn estimate_fee(&self, _target: usize) -> Result<FeeRate, Error> {
         todo!()
     }
 }
 
+#[allow(dead_code)]
 impl UrlClient {
-    fn script_to_scripthash(script: &Script) -> String {
+    fn script_to_scripthash(_script: &Script) -> String {
         todo!()
     }
 
-    async fn _get_tx(&self, txid: &Txid) -> Result<Option<Transaction>, EsploraError> {
+    async fn _get_tx(&self, _txid: &Txid) -> Result<Option<Transaction>, EsploraError> {
         todo!()
     }
 
-    async fn _get_tx_no_opt(&self, txid: &Txid) -> Result<Transaction, EsploraError> {
+    async fn _get_tx_no_opt(&self, _txid: &Txid) -> Result<Transaction, EsploraError> {
         todo!()
     }
 
-    async fn _get_header(&self, block_height: u32) -> Result<BlockHeader, EsploraError> {
+    async fn _get_header(&self, _block_height: u32) -> Result<BlockHeader, EsploraError> {
         todo!()
     }
 
-    async fn _broadcast(&self, transaction: &Transaction) -> Result<(), EsploraError> {
+    async fn _broadcast(&self, _transaction: &Transaction) -> Result<(), EsploraError> {
         todo!()
     }
 
@@ -95,7 +96,7 @@ impl UrlClient {
 
     async fn _script_get_history(
         &self,
-        script: &Script,
+        _script: &Script,
     ) -> Result<Vec<ElsGetHistoryRes>, EsploraError> {
         todo!()
     }
@@ -107,33 +108,33 @@ impl UrlClient {
 
 #[derive(Deserialize)]
 struct EsploraGetHistoryStatus {
-    block_height: Option<usize>,
+    _block_height: Option<usize>,
 }
 
 #[derive(Deserialize)]
 struct EsploraGetHistory {
-    txid: Txid,
-    status: EsploraGetHistoryStatus,
+    _txid: Txid,
+    _status: EsploraGetHistoryStatus,
 }
 
 impl ElectrumLikeSync for Client {
     fn els_batch_script_get_history<'s, I: IntoIterator<Item = &'s Script> + Clone>(
         &self,
-        scripts: I,
+        _scripts: I,
     ) -> Result<Vec<Vec<ElsGetHistoryRes>>, Error> {
         todo!()
     }
 
     fn els_batch_transaction_get<'s, I: IntoIterator<Item = &'s Txid> + Clone>(
         &self,
-        txids: I,
+        _txids: I,
     ) -> Result<Vec<Transaction>, Error> {
         todo!()
     }
 
     fn els_batch_block_header<I: IntoIterator<Item = u32> + Clone>(
         &self,
-        heights: I,
+        _heights: I,
     ) -> Result<Vec<BlockHeader>, Error> {
         todo!()
     }
@@ -156,7 +157,7 @@ pub struct TodoBlockchainConfig {
 impl ConfigurableBlockchain for TodoBlockchain {
     type Config = TodoBlockchainConfig;
 
-    fn from_config(config: &Self::Config) -> Result<Self, Error> {
+    fn from_config(_config: &Self::Config) -> Result<Self, Error> {
         todo!()
     }
 }
