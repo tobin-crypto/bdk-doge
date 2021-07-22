@@ -67,6 +67,7 @@ async-interface = ["async-trait"]
 all-keys = ["keys-bip39"]
 keys-bip39 = ["tiny-bip39", "zeroize"]
 rpc = ["bitcoincore-rpc"]
+vault = []                      # Dummy feature for vault to build
 
 # TODO(Tobin): Re-enable all this test stuff by fixing the dogecoincore_rpc fork.
 # Debug/Test features

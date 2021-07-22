@@ -27,7 +27,10 @@ use crate::database::BatchDatabase;
 use crate::error::Error;
 use crate::FeeRate;
 
-#[cfg(any(feature = "electrum", feature = "esplora"))]
+#[cfg(feature = "vault")]
+pub mod vault;
+
+#[cfg(any(feature = "electrum", feature = "esplora", feature = "vault"))]
 pub(crate) mod utils;
 
 #[cfg(any(feature = "electrum", feature = "esplora", feature = "compact_filters"))]

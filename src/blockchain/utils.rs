@@ -11,12 +11,11 @@
 
 use std::collections::{HashMap, HashSet};
 
+use dogecoin::{BlockHeader, OutPoint, Script, Transaction, Txid};
 #[allow(unused_imports)]
 use log::{debug, error, info, trace};
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-
-use dogecoin::{BlockHeader, OutPoint, Script, Transaction, Txid};
 
 use super::*;
 use crate::database::{BatchDatabase, BatchOperations, DatabaseUtils};
