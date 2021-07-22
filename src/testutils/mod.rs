@@ -14,11 +14,11 @@
 #[cfg(feature = "test-blockchains")]
 pub mod blockchain_tests;
 
-use bitcoin::secp256k1::{Secp256k1, Verification};
-use bitcoin::{Address, PublicKey};
+use dogecoin::secp256k1::{Secp256k1, Verification};
+use dogecoin::{Address, PublicKey};
 
-use miniscript::descriptor::DescriptorPublicKey;
-use miniscript::{Descriptor, MiniscriptKey, TranslatePk};
+use miniscript_doge::descriptor::DescriptorPublicKey;
+use miniscript_doge::{Descriptor, MiniscriptKey, TranslatePk};
 
 #[derive(Clone, Debug)]
 pub struct TestIncomingOutput {
@@ -100,26 +100,26 @@ impl TranslateDescriptor for Descriptor<DescriptorPublicKey> {
 #[macro_export]
 macro_rules! testutils {
     ( @external $descriptors:expr, $child:expr ) => ({
-        use bitcoin::secp256k1::Secp256k1;
-        use miniscript::descriptor::{Descriptor, DescriptorPublicKey, DescriptorTrait};
+        use dogecoin::secp256k1::Secp256k1;
+        use miniscript_doge::descriptor::{Descriptor, DescriptorPublicKey, DescriptorTrait};
 
         use $crate::testutils::TranslateDescriptor;
 
         let secp = Secp256k1::new();
 
         let parsed = Descriptor::<DescriptorPublicKey>::parse_descriptor(&secp, &$descriptors.0).expect("Failed to parse descriptor in `testutils!(@external)`").0;
-        parsed.derive_translated(&secp, $child).address(bitcoin::Network::Regtest).expect("No address form")
+        parsed.derive_translated(&secp, $child).address(dogecoin::Network::Regtest).expect("No address form")
     });
     ( @internal $descriptors:expr, $child:expr ) => ({
-        use bitcoin::secp256k1::Secp256k1;
-        use miniscript::descriptor::{Descriptor, DescriptorPublicKey, DescriptorTrait};
+        use dogecoin::secp256k1::Secp256k1;
+        use miniscript_doge::descriptor::{Descriptor, DescriptorPublicKey, DescriptorTrait};
 
         use $crate::testutils::TranslateDescriptor;
 
         let secp = Secp256k1::new();
 
         let parsed = Descriptor::<DescriptorPublicKey>::parse_descriptor(&secp, &$descriptors.1.expect("Missing internal descriptor")).expect("Failed to parse descriptor in `testutils!(@internal)`").0;
-        parsed.derive_translated(&secp, $child).address(bitcoin::Network::Regtest).expect("No address form")
+        parsed.derive_translated(&secp, $child).address(dogecoin::Network::Regtest).expect("No address form")
     });
     ( @e $descriptors:expr, $child:expr ) => ({ testutils!(@external $descriptors, $child) });
     ( @i $descriptors:expr, $child:expr ) => ({ testutils!(@internal $descriptors, $child) });
@@ -145,8 +145,8 @@ macro_rules! testutils {
         let mut seed = [0u8; 32];
         rand::thread_rng().fill(&mut seed[..]);
 
-        let key = bitcoin::util::bip32::ExtendedPrivKey::new_master(
-            bitcoin::Network::Testnet,
+        let key = dogecoin::util::bip32::ExtendedPrivKey::new_master(
+            dogecoin::Network::Testnet,
             &seed,
         );
 
@@ -158,13 +158,13 @@ macro_rules! testutils {
     ( @generate_wif ) => ({
         use rand::Rng;
 
-        let mut key = [0u8; bitcoin::secp256k1::constants::SECRET_KEY_SIZE];
+        let mut key = [0u8; dogecoin::secp256k1::constants::SECRET_KEY_SIZE];
         rand::thread_rng().fill(&mut key[..]);
 
-        (bitcoin::PrivateKey {
+        (dogecoin::PrivateKey {
             compressed: true,
-            network: bitcoin::Network::Testnet,
-            key: bitcoin::secp256k1::SecretKey::from_slice(&key).unwrap(),
+            network: dogecoin::Network::Testnet,
+            key: dogecoin::secp256k1::SecretKey::from_slice(&key).unwrap(),
         }.to_string(), None::<String>, None::<String>)
     });
 
@@ -181,8 +181,8 @@ macro_rules! testutils {
     ( @descriptors ( $external_descriptor:expr ) $( ( $internal_descriptor:expr ) )? $( ( @keys $( $keys:tt )* ) )* ) => ({
         use std::str::FromStr;
         use std::collections::HashMap;
-        use miniscript::descriptor::Descriptor;
-        use miniscript::TranslatePk;
+        use miniscript_doge::descriptor::Descriptor;
+        use miniscript_doge::TranslatePk;
 
         #[allow(unused_assignments, unused_mut)]
         let mut keys: HashMap<&'static str, (String, Option<String>, Option<String>)> = HashMap::new();

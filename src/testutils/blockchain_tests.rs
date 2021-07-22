@@ -1,14 +1,14 @@
 use crate::testutils::TestIncomingTx;
-use bitcoin::consensus::encode::{deserialize, serialize};
-use bitcoin::hashes::hex::{FromHex, ToHex};
-use bitcoin::hashes::sha256d;
-use bitcoin::{Address, Amount, Script, Transaction, Txid};
+use dogecoin::consensus::encode::{deserialize, serialize};
+use dogecoin::hashes::hex::{FromHex, ToHex};
+use dogecoin::hashes::sha256d;
+use dogecoin::{Address, Amount, Script, Transaction, Txid};
 pub use bitcoincore_rpc::bitcoincore_rpc_json::AddressType;
 pub use bitcoincore_rpc::{Auth, Client as RpcClient, RpcApi};
 use core::str::FromStr;
 use electrsd::bitcoind::BitcoinD;
 use electrsd::{bitcoind, ElectrsD};
-pub use electrum_client::{Client as ElectrumClient, ElectrumApi};
+pub use electrum_client_doge::{Client as ElectrumClient, ElectrumApi};
 #[allow(unused_imports)]
 use log::{debug, error, info, trace};
 use std::collections::HashMap;
@@ -151,10 +151,10 @@ impl TestClient {
     }
 
     pub fn generate_manually(&mut self, txs: Vec<Transaction>) -> String {
-        use bitcoin::blockdata::block::{Block, BlockHeader};
-        use bitcoin::blockdata::script::Builder;
-        use bitcoin::blockdata::transaction::{OutPoint, TxIn, TxOut};
-        use bitcoin::hash_types::{BlockHash, TxMerkleNode};
+        use dogecoin::blockdata::block::{Block, BlockHeader};
+        use dogecoin::blockdata::script::Builder;
+        use dogecoin::blockdata::transaction::{OutPoint, TxIn, TxOut};
+        use dogecoin::hash_types::{BlockHash, TxMerkleNode};
 
         let block_template: serde_json::Value = self
             .call("getblocktemplate", &[json!({"rules": ["segwit"]})])
@@ -350,7 +350,7 @@ macro_rules! bdk_blockchain_tests {
      fn $_fn_name:ident ( $( $test_client:ident : &TestClient )? $(,)? ) -> $blockchain:ty $block:block) => {
         #[cfg(test)]
         mod bdk_blockchain_tests {
-            use $crate::bitcoin::Network;
+            use $crate::dogecoin::Network;
             use $crate::testutils::blockchain_tests::TestClient;
             use $crate::blockchain::noop_progress;
             use $crate::database::MemoryDatabase;
@@ -588,7 +588,7 @@ macro_rules! bdk_blockchain_tests {
                 let finalized = wallet.sign(&mut psbt, Default::default()).unwrap();
                 assert!(finalized, "Cannot finalize transaction");
                 let tx = psbt.extract_tx();
-                println!("{}", bitcoin::consensus::encode::serialize_hex(&tx));
+                println!("{}", dogecoin::consensus::encode::serialize_hex(&tx));
                 wallet.broadcast(tx).unwrap();
                 wallet.sync(noop_progress(), None).unwrap();
                 assert_eq!(wallet.get_balance().unwrap(), details.received, "incorrect balance after send");

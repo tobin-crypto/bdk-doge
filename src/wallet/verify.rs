@@ -14,8 +14,8 @@
 use std::collections::HashMap;
 use std::fmt;
 
-use bitcoin::consensus::serialize;
-use bitcoin::{OutPoint, Transaction, Txid};
+use dogecoin::consensus::serialize;
+use dogecoin::{OutPoint, Transaction, Txid};
 
 use crate::blockchain::Blockchain;
 use crate::database::Database;
@@ -106,9 +106,9 @@ impl_error!(bitcoinconsensus::Error, Consensus, VerifyError);
 mod test {
     use std::collections::HashSet;
 
-    use bitcoin::consensus::encode::deserialize;
-    use bitcoin::hashes::hex::FromHex;
-    use bitcoin::{Transaction, Txid};
+    use dogecoin::consensus::encode::deserialize;
+    use dogecoin::hashes::hex::FromHex;
+    use dogecoin::{Transaction, Txid};
 
     use crate::blockchain::{Blockchain, Capability, Progress};
     use crate::database::{BatchDatabase, BatchOperations, MemoryDatabase};

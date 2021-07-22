@@ -14,10 +14,10 @@
 // TODO: maybe write our own implementation of bip39? Seems stupid to have an extra dependency for
 // something that should be fairly simple to re-implement.
 
-use bitcoin::util::bip32;
-use bitcoin::Network;
+use dogecoin::util::bip32;
+use dogecoin::Network;
 
-use miniscript::ScriptContext;
+use miniscript_doge::ScriptContext;
 
 pub use bip39::{Language, Mnemonic, MnemonicType, Seed};
 
@@ -119,7 +119,7 @@ impl<Ctx: ScriptContext> GeneratableKey<Ctx> for Mnemonic {
 mod test {
     use std::str::FromStr;
 
-    use bitcoin::util::bip32;
+    use dogecoin::util::bip32;
 
     use bip39::{Language, Mnemonic, MnemonicType};
 
@@ -155,7 +155,7 @@ mod test {
 
     #[test]
     fn test_keys_generate_bip39() {
-        let generated_mnemonic: GeneratedKey<_, miniscript::Segwitv0> =
+        let generated_mnemonic: GeneratedKey<_, miniscript_doge::Segwitv0> =
             Mnemonic::generate_with_entropy(
                 (MnemonicType::Words12, Language::English),
                 crate::keys::test::TEST_ENTROPY,
@@ -167,7 +167,7 @@ mod test {
             "primary fetch primary fetch primary fetch primary fetch primary fetch primary fever"
         );
 
-        let generated_mnemonic: GeneratedKey<_, miniscript::Segwitv0> =
+        let generated_mnemonic: GeneratedKey<_, miniscript_doge::Segwitv0> =
             Mnemonic::generate_with_entropy(
                 (MnemonicType::Words24, Language::English),
                 crate::keys::test::TEST_ENTROPY,
@@ -179,11 +179,11 @@ mod test {
 
     #[test]
     fn test_keys_generate_bip39_random() {
-        let generated_mnemonic: GeneratedKey<_, miniscript::Segwitv0> =
+        let generated_mnemonic: GeneratedKey<_, miniscript_doge::Segwitv0> =
             Mnemonic::generate((MnemonicType::Words12, Language::English)).unwrap();
         assert_eq!(generated_mnemonic.valid_networks, any_network());
 
-        let generated_mnemonic: GeneratedKey<_, miniscript::Segwitv0> =
+        let generated_mnemonic: GeneratedKey<_, miniscript_doge::Segwitv0> =
             Mnemonic::generate((MnemonicType::Words24, Language::English)).unwrap();
         assert_eq!(generated_mnemonic.valid_networks, any_network());
     }

@@ -11,8 +11,8 @@
 
 use std::convert::AsRef;
 
-use bitcoin::blockdata::transaction::{OutPoint, Transaction, TxOut};
-use bitcoin::{hash_types::Txid, util::psbt};
+use dogecoin::blockdata::transaction::{OutPoint, Transaction, TxOut};
+use dogecoin::{hash_types::Txid, util::psbt};
 
 use serde::{Deserialize, Serialize};
 

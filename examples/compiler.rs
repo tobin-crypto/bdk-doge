@@ -23,13 +23,13 @@ use log::info;
 
 use clap::{App, Arg};
 
-use bitcoin::Network;
-use miniscript::policy::Concrete;
-use miniscript::Descriptor;
+use dogecoin::Network;
+use miniscript_doge::policy::Concrete;
+use miniscript_doge::Descriptor;
 
-use bdk::database::memory::MemoryDatabase;
-use bdk::wallet::AddressIndex::New;
-use bdk::{KeychainKind, Wallet};
+use bdk_doge::database::memory::MemoryDatabase;
+use bdk_doge::wallet::AddressIndex::New;
+use bdk_doge::{KeychainKind, Wallet};
 
 fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init_from_env(

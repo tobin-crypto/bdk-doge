@@ -17,9 +17,9 @@
 use std::collections::BTreeMap;
 use std::ops::Bound::{Excluded, Included};
 
-use bitcoin::consensus::encode::{deserialize, serialize};
-use bitcoin::hash_types::Txid;
-use bitcoin::{OutPoint, Script, Transaction};
+use dogecoin::consensus::encode::{deserialize, serialize};
+use dogecoin::hash_types::Txid;
+use dogecoin::{OutPoint, Script, Transaction};
 
 use crate::database::{BatchDatabase, BatchOperations, ConfigurableDatabase, Database};
 use crate::error::Error;
@@ -463,9 +463,9 @@ macro_rules! populate_test_db {
             output: tx_meta
                 .output
                 .iter()
-                .map(|out_meta| bitcoin::TxOut {
+                .map(|out_meta| dogecoin::TxOut {
                     value: out_meta.value,
-                    script_pubkey: bitcoin::Address::from_str(&out_meta.to_address)
+                    script_pubkey: dogecoin::Address::from_str(&out_meta.to_address)
                         .unwrap()
                         .script_pubkey(),
                 })
@@ -510,7 +510,7 @@ macro_rules! populate_test_db {
 /// Macro for getting a wallet for use in a doctest
 macro_rules! doctest_wallet {
     () => {{
-        use $crate::bitcoin::Network;
+        use $crate::dogecoin::Network;
         use $crate::database::MemoryDatabase;
         use $crate::testutils;
         let descriptor = "wpkh(cVpPVruEDdmutPzisEsYvtST1usBR3ntr8pXSyt6D2YYqXRyPcFW)";

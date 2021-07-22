@@ -19,9 +19,9 @@
 //! In this example, `wallet_memory` and `wallet_sled` have the same type of `Wallet<(), AnyDatabase>`.
 //!
 //! ```no_run
-//! # use bitcoin::Network;
-//! # use bdk::database::{AnyDatabase, MemoryDatabase};
-//! # use bdk::{Wallet};
+//! # use dogecoin::Network;
+//! # use bdk_doge::database::{AnyDatabase, MemoryDatabase};
+//! # use bdk_doge::{Wallet};
 //! let memory = MemoryDatabase::default();
 //! let wallet_memory = Wallet::new_offline("...", None, Network::Testnet, memory)?;
 //!
@@ -30,20 +30,20 @@
 //! let sled = sled::open("my-database")?.open_tree("default_tree")?;
 //! let wallet_sled = Wallet::new_offline("...", None, Network::Testnet, sled)?;
 //! # }
-//! # Ok::<(), bdk::Error>(())
+//! # Ok::<(), bdk_doge::Error>(())
 //! ```
 //!
 //! When paired with the use of [`ConfigurableDatabase`], it allows creating wallets with any
 //! database supported using a single line of code:
 //!
 //! ```no_run
-//! # use bitcoin::Network;
-//! # use bdk::database::*;
-//! # use bdk::{Wallet};
+//! # use dogecoin::Network;
+//! # use bdk_doge::database::*;
+//! # use bdk_doge::{Wallet};
 //! let config = serde_json::from_str("...")?;
 //! let database = AnyDatabase::from_config(&config)?;
 //! let wallet = Wallet::new_offline("...", None, Network::Testnet, database)?;
-//! # Ok::<(), bdk::Error>(())
+//! # Ok::<(), bdk_doge::Error>(())
 //! ```
 
 use super::*;

@@ -20,9 +20,9 @@
 //!
 //! ```
 //! # use std::sync::Arc;
-//! # use bdk::descriptor::*;
-//! # use bdk::bitcoin::secp256k1::Secp256k1;
-//! use bdk::descriptor::policy::BuildSatisfaction;
+//! # use bdk_doge::descriptor::*;
+//! # use bdk_doge::dogecoin::secp256k1::Secp256k1;
+//! use bdk_doge::descriptor::policy::BuildSatisfaction;
 //! let secp = Secp256k1::new();
 //! let desc = "wsh(and_v(v:pk(cV3oCth6zxZ1UVsHLnGothsWNsaoxRhC6aeNi5VbSdFpwUkgkEci),or_d(pk(cVMTy7uebJgvFaSBwcgvwk8qn8xSLc97dKow4MBetjrrahZoimm2),older(12960))))";
 //!
@@ -32,7 +32,7 @@
 //! let signers = Arc::new(key_map.into());
 //! let policy = extended_desc.extract_policy(&signers, BuildSatisfaction::None, &secp)?;
 //! println!("policy: {}", serde_json::to_string(&policy)?);
-//! # Ok::<(), bdk::Error>(())
+//! # Ok::<(), bdk_doge::Error>(())
 //! ```
 
 use std::cmp::max;
@@ -42,12 +42,12 @@ use std::fmt;
 use serde::ser::SerializeMap;
 use serde::{Serialize, Serializer};
 
-use bitcoin::hashes::*;
-use bitcoin::util::bip32::Fingerprint;
-use bitcoin::PublicKey;
+use dogecoin::hashes::*;
+use dogecoin::util::bip32::Fingerprint;
+use dogecoin::PublicKey;
 
-use miniscript::descriptor::{DescriptorPublicKey, ShInner, SortedMultiVec, WshInner};
-use miniscript::{
+use miniscript_doge::descriptor::{DescriptorPublicKey, ShInner, SortedMultiVec, WshInner};
+use miniscript_doge::{
     Descriptor, Miniscript, MiniscriptKey, Satisfier, ScriptContext, Terminal, ToPublicKey,
 };
 
@@ -61,8 +61,8 @@ use crate::wallet::utils::{self, After, Older, SecpCtx};
 use super::checksum::get_checksum;
 use super::error::Error;
 use super::XKeyUtils;
-use bitcoin::util::psbt::PartiallySignedTransaction as Psbt;
-use miniscript::psbt::PsbtInputSatisfier;
+use dogecoin::util::psbt::PartiallySignedTransaction as Psbt;
+use miniscript_doge::psbt::PsbtInputSatisfier;
 
 /// Raw public key or extended key fingerprint
 #[derive(Debug, Clone, Default, Serialize)]
@@ -825,9 +825,9 @@ impl<Ctx: ScriptContext> ExtractPolicy for Miniscript<DescriptorPublicKey, Ctx> 
                 } = build_sat
                 {
                     let after = After::new(Some(current_height), false);
-                    let after_sat = Satisfier::<bitcoin::PublicKey>::check_after(&after, *value);
+                    let after_sat = Satisfier::<dogecoin::PublicKey>::check_after(&after, *value);
                     let inputs_sat = psbt_inputs_sat(psbt)
-                        .all(|sat| Satisfier::<bitcoin::PublicKey>::check_after(&sat, *value));
+                        .all(|sat| Satisfier::<dogecoin::PublicKey>::check_after(&sat, *value));
                     if after_sat && inputs_sat {
                         policy.satisfaction = policy.contribution.clone();
                     }
@@ -850,9 +850,9 @@ impl<Ctx: ScriptContext> ExtractPolicy for Miniscript<DescriptorPublicKey, Ctx> 
                 } = build_sat
                 {
                     let older = Older::new(Some(current_height), Some(input_max_height), false);
-                    let older_sat = Satisfier::<bitcoin::PublicKey>::check_older(&older, *value);
+                    let older_sat = Satisfier::<dogecoin::PublicKey>::check_older(&older, *value);
                     let inputs_sat = psbt_inputs_sat(psbt)
-                        .all(|sat| Satisfier::<bitcoin::PublicKey>::check_older(&sat, *value));
+                        .all(|sat| Satisfier::<dogecoin::PublicKey>::check_older(&sat, *value));
                     if older_sat && inputs_sat {
                         policy.satisfaction = policy.contribution.clone();
                     }
@@ -1011,10 +1011,10 @@ mod test {
     use crate::descriptor::policy::SatisfiableItem::{Multisig, Signature, Thresh};
     use crate::keys::{DescriptorKey, IntoDescriptorKey};
     use crate::wallet::signer::SignersContainer;
-    use bitcoin::secp256k1::Secp256k1;
-    use bitcoin::util::bip32;
-    use bitcoin::Network;
-    use miniscript::DescriptorTrait;
+    use dogecoin::secp256k1::Secp256k1;
+    use dogecoin::util::bip32;
+    use dogecoin::Network;
+    use miniscript_doge::DescriptorTrait;
     use std::str::FromStr;
     use std::sync::Arc;
 

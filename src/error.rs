@@ -11,9 +11,9 @@
 
 use std::fmt;
 
-use crate::bitcoin::Network;
+use crate::dogecoin::Network;
 use crate::{descriptor, wallet, wallet::address_validator};
-use bitcoin::OutPoint;
+use dogecoin::OutPoint;
 
 /// Errors that can be thrown by the [`Wallet`](crate::wallet::Wallet)
 #[derive(Debug)]
@@ -102,23 +102,23 @@ pub enum Error {
     /// Error that can be returned to fail the validation of an address
     AddressValidator(crate::wallet::address_validator::AddressValidatorError),
     /// Encoding error
-    Encode(bitcoin::consensus::encode::Error),
+    Encode(dogecoin::consensus::encode::Error),
     /// Miniscript error
-    Miniscript(miniscript::Error),
+    Miniscript(miniscript_doge::Error),
     /// BIP32 error
-    Bip32(bitcoin::util::bip32::Error),
+    Bip32(dogecoin::util::bip32::Error),
     /// An ECDSA error
-    Secp256k1(bitcoin::secp256k1::Error),
+    Secp256k1(dogecoin::secp256k1::Error),
     /// Error serializing or deserializing JSON data
     Json(serde_json::Error),
     /// Hex decoding error
-    Hex(bitcoin::hashes::hex::Error),
+    Hex(dogecoin::hashes::hex::Error),
     /// Partially signed bitcoin transaction error
-    Psbt(bitcoin::util::psbt::Error),
+    Psbt(dogecoin::util::psbt::Error),
     /// Partially signed bitcoin transaction parseerror
-    PsbtParse(bitcoin::util::psbt::PsbtParseError),
+    PsbtParse(dogecoin::util::psbt::PsbtParseError),
 
-    //KeyMismatch(bitcoin::secp256k1::PublicKey, bitcoin::secp256k1::PublicKey),
+    //KeyMismatch(dogecoin::secp256k1::PublicKey, dogecoin::secp256k1::PublicKey),
     //MissingInputUTXO(usize),
     //InvalidAddressNetwork(Address),
     //DifferentTransactions,
@@ -127,7 +127,7 @@ pub enum Error {
     //MissingCachedAddresses,
     #[cfg(feature = "electrum")]
     /// Electrum client error
-    Electrum(electrum_client::Error),
+    Electrum(electrum_client_doge::Error),
     #[cfg(feature = "esplora")]
     /// Esplora client error
     Esplora(crate::blockchain::esplora::EsploraError),
@@ -179,17 +179,17 @@ impl From<crate::keys::KeyError> for Error {
     }
 }
 
-impl_error!(bitcoin::consensus::encode::Error, Encode);
-impl_error!(miniscript::Error, Miniscript);
-impl_error!(bitcoin::util::bip32::Error, Bip32);
-impl_error!(bitcoin::secp256k1::Error, Secp256k1);
+impl_error!(dogecoin::consensus::encode::Error, Encode);
+impl_error!(miniscript_doge::Error, Miniscript);
+impl_error!(dogecoin::util::bip32::Error, Bip32);
+impl_error!(dogecoin::secp256k1::Error, Secp256k1);
 impl_error!(serde_json::Error, Json);
-impl_error!(bitcoin::hashes::hex::Error, Hex);
-impl_error!(bitcoin::util::psbt::Error, Psbt);
-impl_error!(bitcoin::util::psbt::PsbtParseError, PsbtParse);
+impl_error!(dogecoin::hashes::hex::Error, Hex);
+impl_error!(dogecoin::util::psbt::Error, Psbt);
+impl_error!(dogecoin::util::psbt::PsbtParseError, PsbtParse);
 
 #[cfg(feature = "electrum")]
-impl_error!(electrum_client::Error, Electrum);
+impl_error!(electrum_client_doge::Error, Electrum);
 #[cfg(feature = "esplora")]
 impl_error!(crate::blockchain::esplora::EsploraError, Esplora);
 #[cfg(feature = "key-value-db")]

@@ -32,15 +32,15 @@ pub enum Error {
     InvalidDescriptorCharacter(char),
 
     /// BIP32 error
-    Bip32(bitcoin::util::bip32::Error),
+    Bip32(dogecoin::util::bip32::Error),
     /// Error during base58 decoding
-    Base58(bitcoin::util::base58::Error),
+    Base58(dogecoin::util::base58::Error),
     /// Key-related error
-    Pk(bitcoin::util::key::Error),
+    Pk(dogecoin::util::key::Error),
     /// Miniscript error
-    Miniscript(miniscript::Error),
+    Miniscript(miniscript_doge::Error),
     /// Hex decoding error
-    Hex(bitcoin::hashes::hex::Error),
+    Hex(dogecoin::hashes::hex::Error),
 }
 
 impl From<crate::keys::KeyError> for Error {
@@ -61,9 +61,9 @@ impl std::fmt::Display for Error {
 
 impl std::error::Error for Error {}
 
-impl_error!(bitcoin::util::bip32::Error, Bip32);
-impl_error!(bitcoin::util::base58::Error, Base58);
-impl_error!(bitcoin::util::key::Error, Pk);
-impl_error!(miniscript::Error, Miniscript);
-impl_error!(bitcoin::hashes::hex::Error, Hex);
+impl_error!(dogecoin::util::bip32::Error, Bip32);
+impl_error!(dogecoin::util::base58::Error, Base58);
+impl_error!(dogecoin::util::key::Error, Pk);
+impl_error!(miniscript_doge::Error, Miniscript);
+impl_error!(dogecoin::hashes::hex::Error, Hex);
 impl_error!(crate::descriptor::policy::PolicyError, Policy);

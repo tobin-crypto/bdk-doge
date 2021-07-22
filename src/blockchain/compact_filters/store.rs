@@ -22,16 +22,16 @@ use rand::{thread_rng, Rng};
 
 use rocksdb::{Direction, IteratorMode, ReadOptions, WriteBatch, DB};
 
-use bitcoin::consensus::{deserialize, encode::VarInt, serialize, Decodable, Encodable};
-use bitcoin::hash_types::{FilterHash, FilterHeader};
-use bitcoin::hashes::hex::FromHex;
-use bitcoin::hashes::Hash;
-use bitcoin::util::bip158::BlockFilter;
-use bitcoin::util::uint::Uint256;
-use bitcoin::Block;
-use bitcoin::BlockHash;
-use bitcoin::BlockHeader;
-use bitcoin::Network;
+use dogecoin::consensus::{deserialize, encode::VarInt, serialize, Decodable, Encodable};
+use dogecoin::hash_types::{FilterHash, FilterHeader};
+use dogecoin::hashes::hex::FromHex;
+use dogecoin::hashes::Hash;
+use dogecoin::util::bip158::BlockFilter;
+use dogecoin::util::uint::Uint256;
+use dogecoin::Block;
+use dogecoin::BlockHash;
+use dogecoin::BlockHeader;
+use dogecoin::Network;
 
 use lazy_static::lazy_static;
 
@@ -158,7 +158,7 @@ impl Encodable for BundleStatus {
 }
 
 impl Decodable for BundleStatus {
-    fn consensus_decode<D: Read>(mut d: D) -> Result<Self, bitcoin::consensus::encode::Error> {
+    fn consensus_decode<D: Read>(mut d: D) -> Result<Self, dogecoin::consensus::encode::Error> {
         let byte_type = u8::consensus_decode(&mut d)?;
         match byte_type {
             0x00 => Ok(BundleStatus::Init),
@@ -207,7 +207,7 @@ impl Decodable for BundleStatus {
 
                 Ok(BundleStatus::Tip { cf_filters })
             }
-            _ => Err(bitcoin::consensus::encode::Error::ParseFailed(
+            _ => Err(dogecoin::consensus::encode::Error::ParseFailed(
                 "Invalid byte type",
             )),
         }
@@ -655,7 +655,7 @@ impl CfStore {
         };
 
         let filter = BlockFilter::new_script_filter(genesis, |utxo| {
-            Err(bitcoin::util::bip158::Error::UtxoMissing(*utxo))
+            Err(dogecoin::util::bip158::Error::UtxoMissing(*utxo))
         })?;
         let first_key = StoreEntry::CFilterTable((filter_type, Some(0))).get_key();
 

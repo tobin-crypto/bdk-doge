@@ -16,14 +16,14 @@ use std::fmt;
 use std::hash::{Hash, Hasher};
 use std::ops::Deref;
 
-use bitcoin::hashes::hash160;
-use bitcoin::PublicKey;
+use dogecoin::hashes::hash160;
+use dogecoin::PublicKey;
 
-pub use miniscript::{
+pub use miniscript_doge::{
     descriptor::KeyMap, descriptor::Wildcard, Descriptor, DescriptorPublicKey, Legacy, Miniscript,
     ScriptContext, Segwitv0,
 };
-use miniscript::{MiniscriptKey, ToPublicKey, TranslatePk};
+use miniscript_doge::{MiniscriptKey, ToPublicKey, TranslatePk};
 
 use crate::wallet::utils::SecpCtx;
 

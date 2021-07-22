@@ -15,9 +15,9 @@
 //!
 //! ```
 //! # use std::str::FromStr;
-//! # use bitcoin::*;
-//! # use bdk::*;
-//! # use bdk::wallet::tx_builder::CreateTx;
+//! # use dogecoin::*;
+//! # use bdk_doge::*;
+//! # use bdk_doge::wallet::tx_builder::CreateTx;
 //! # let to_address = Address::from_str("2N4eQYCbKUHCCTUjBJeHcJp9ok6J2GZsTDt").unwrap();
 //! # let wallet = doctest_wallet!();
 //! // create a TxBuilder from a wallet
@@ -33,7 +33,7 @@
 //!     // Turn on RBF signaling
 //!     .enable_rbf();
 //! let (psbt, tx_details) = tx_builder.finish()?;
-//! # Ok::<(), bdk::Error>(())
+//! # Ok::<(), bdk_doge::Error>(())
 //! ```
 
 use std::collections::BTreeMap;
@@ -41,10 +41,10 @@ use std::collections::HashSet;
 use std::default::Default;
 use std::marker::PhantomData;
 
-use bitcoin::util::psbt::{self, PartiallySignedTransaction as Psbt};
-use bitcoin::{OutPoint, Script, SigHashType, Transaction};
+use dogecoin::util::psbt::{self, PartiallySignedTransaction as Psbt};
+use dogecoin::{OutPoint, Script, SigHashType, Transaction};
 
-use miniscript::descriptor::DescriptorTrait;
+use miniscript_doge::descriptor::DescriptorTrait;
 
 use super::coin_selection::{CoinSelectionAlgorithm, DefaultCoinSelectionAlgorithm};
 use crate::{database::BatchDatabase, Error, Utxo, Wallet};
@@ -76,9 +76,9 @@ impl TxBuilderContext for BumpFee {}
 /// as in the following example:
 ///
 /// ```
-/// # use bdk::*;
-/// # use bdk::wallet::tx_builder::*;
-/// # use bitcoin::*;
+/// # use bdk_doge::*;
+/// # use bdk_doge::wallet::tx_builder::*;
+/// # use dogecoin::*;
 /// # use core::str::FromStr;
 /// # let wallet = doctest_wallet!();
 /// # let addr1 = Address::from_str("2N4eQYCbKUHCCTUjBJeHcJp9ok6J2GZsTDt").unwrap();
@@ -107,7 +107,7 @@ impl TxBuilderContext for BumpFee {}
 ///     psbt1.global.unsigned_tx.output[..2],
 ///     psbt2.global.unsigned_tx.output[..2]
 /// );
-/// # Ok::<(), bdk::Error>(())
+/// # Ok::<(), bdk_doge::Error>(())
 /// ```
 ///
 /// At the moment [`coin_selection`] is an exception to the rule as it consumes `self`.
@@ -242,8 +242,8 @@ impl<'a, B, D: BatchDatabase, Cs: CoinSelectionAlgorithm<D>, Ctx: TxBuilderConte
     /// ```
     /// # use std::str::FromStr;
     /// # use std::collections::BTreeMap;
-    /// # use bitcoin::*;
-    /// # use bdk::*;
+    /// # use dogecoin::*;
+    /// # use bdk_doge::*;
     /// # let to_address = Address::from_str("2N4eQYCbKUHCCTUjBJeHcJp9ok6J2GZsTDt").unwrap();
     /// # let wallet = doctest_wallet!();
     /// let mut path = BTreeMap::new();
@@ -254,7 +254,7 @@ impl<'a, B, D: BatchDatabase, Cs: CoinSelectionAlgorithm<D>, Ctx: TxBuilderConte
     ///     .add_recipient(to_address.script_pubkey(), 50_000)
     ///     .policy_path(path, KeychainKind::External);
     ///
-    /// # Ok::<(), bdk::Error>(())
+    /// # Ok::<(), bdk_doge::Error>(())
     /// ```
     pub fn policy_path(
         &mut self,
@@ -342,7 +342,7 @@ impl<'a, B, D: BatchDatabase, Cs: CoinSelectionAlgorithm<D>, Ctx: TxBuilderConte
     ///
     /// [`only_witness_utxo`]: Self::only_witness_utxo
     /// [`finish`]: Self::finish
-    /// [`max_satisfaction_weight`]: miniscript::Descriptor::max_satisfaction_weight
+    /// [`max_satisfaction_weight`]: miniscript_doge::Descriptor::max_satisfaction_weight
     pub fn add_foreign_utxo(
         &mut self,
         outpoint: OutPoint,
@@ -465,7 +465,7 @@ impl<'a, B, D: BatchDatabase, Cs: CoinSelectionAlgorithm<D>, Ctx: TxBuilderConte
         self
     }
 
-    /// Only Fill-in the [`psbt::Input::witness_utxo`](bitcoin::util::psbt::Input::witness_utxo) field when spending from
+    /// Only Fill-in the [`psbt::Input::witness_utxo`](dogecoin::util::psbt::Input::witness_utxo) field when spending from
     /// SegWit descriptors.
     ///
     /// This reduces the size of the PSBT, but some signers might reject them due to the lack of
@@ -475,8 +475,8 @@ impl<'a, B, D: BatchDatabase, Cs: CoinSelectionAlgorithm<D>, Ctx: TxBuilderConte
         self
     }
 
-    /// Fill-in the [`psbt::Output::redeem_script`](bitcoin::util::psbt::Output::redeem_script) and
-    /// [`psbt::Output::witness_script`](bitcoin::util::psbt::Output::witness_script) fields.
+    /// Fill-in the [`psbt::Output::redeem_script`](dogecoin::util::psbt::Output::redeem_script) and
+    /// [`psbt::Output::witness_script`](dogecoin::util::psbt::Output::witness_script) fields.
     ///
     /// This is useful for signers which always require it, like ColdCard hardware wallets.
     pub fn include_output_redeem_witness_script(&mut self) -> &mut Self {
@@ -579,9 +579,9 @@ impl<'a, B, D: BatchDatabase, Cs: CoinSelectionAlgorithm<D>> TxBuilder<'a, B, D,
     ///
     /// ```
     /// # use std::str::FromStr;
-    /// # use bitcoin::*;
-    /// # use bdk::*;
-    /// # use bdk::wallet::tx_builder::CreateTx;
+    /// # use dogecoin::*;
+    /// # use bdk_doge::*;
+    /// # use bdk_doge::wallet::tx_builder::CreateTx;
     /// # let to_address = Address::from_str("2N4eQYCbKUHCCTUjBJeHcJp9ok6J2GZsTDt").unwrap();
     /// # let wallet = doctest_wallet!();
     /// let mut tx_builder = wallet.build_tx();
@@ -594,7 +594,7 @@ impl<'a, B, D: BatchDatabase, Cs: CoinSelectionAlgorithm<D>> TxBuilder<'a, B, D,
     ///     .fee_rate(FeeRate::from_sat_per_vb(5.0))
     ///     .enable_rbf();
     /// let (psbt, tx_details) = tx_builder.finish()?;
-    /// # Ok::<(), bdk::Error>(())
+    /// # Ok::<(), bdk_doge::Error>(())
     /// ```
     ///
     /// [`allow_shrinking`]: Self::allow_shrinking
@@ -750,13 +750,13 @@ mod test {
                                     00000000";
     macro_rules! ordering_test_tx {
         () => {
-            deserialize::<bitcoin::Transaction>(&Vec::<u8>::from_hex(ORDERING_TEST_TX).unwrap())
+            deserialize::<dogecoin::Transaction>(&Vec::<u8>::from_hex(ORDERING_TEST_TX).unwrap())
                 .unwrap()
         };
     }
 
-    use bitcoin::consensus::deserialize;
-    use bitcoin::hashes::hex::FromHex;
+    use dogecoin::consensus::deserialize;
+    use dogecoin::hashes::hex::FromHex;
 
     use super::*;
 
@@ -797,21 +797,21 @@ mod test {
 
         assert_eq!(
             tx.input[0].previous_output,
-            bitcoin::OutPoint::from_str(
+            dogecoin::OutPoint::from_str(
                 "0e53ec5dfb2cb8a71fec32dc9a634a35b7e24799295ddd5278217822e0b31f57:5"
             )
             .unwrap()
         );
         assert_eq!(
             tx.input[1].previous_output,
-            bitcoin::OutPoint::from_str(
+            dogecoin::OutPoint::from_str(
                 "0f60fdd185542f2c6ea19030b0796051e7772b6026dd5ddccd7a2f93b73e6fc2:0"
             )
             .unwrap()
         );
         assert_eq!(
             tx.input[2].previous_output,
-            bitcoin::OutPoint::from_str(
+            dogecoin::OutPoint::from_str(
                 "0f60fdd185542f2c6ea19030b0796051e7772b6026dd5ddccd7a2f93b73e6fc2:1"
             )
             .unwrap()

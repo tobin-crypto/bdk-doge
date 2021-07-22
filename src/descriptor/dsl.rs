@@ -25,8 +25,8 @@ macro_rules! impl_top_level_sh {
     ( $inner_struct:ident, $constructor:ident, $sortedmulti_constructor:ident, $ctx:ident, sortedmulti $( $inner:tt )* ) => {{
         use std::marker::PhantomData;
 
-        use $crate::miniscript::descriptor::{$inner_struct, Descriptor, DescriptorPublicKey};
-        use $crate::miniscript::$ctx;
+        use $crate::miniscript_doge::descriptor::{$inner_struct, Descriptor, DescriptorPublicKey};
+        use $crate::miniscript_doge::$ctx;
 
         let build_desc = |k, pks| {
             Ok((Descriptor::<DescriptorPublicKey>::$inner_struct($inner_struct::$sortedmulti_constructor(k, pks)?), PhantomData::<$ctx>))
@@ -37,8 +37,8 @@ macro_rules! impl_top_level_sh {
     ( $inner_struct:ident, $constructor:ident, $sortedmulti_constructor:ident, $ctx:ident, sortedmulti_vec $( $inner:tt )* ) => {{
         use std::marker::PhantomData;
 
-        use $crate::miniscript::descriptor::{$inner_struct, Descriptor, DescriptorPublicKey};
-        use $crate::miniscript::$ctx;
+        use $crate::miniscript_doge::descriptor::{$inner_struct, Descriptor, DescriptorPublicKey};
+        use $crate::miniscript_doge::$ctx;
 
         let build_desc = |k, pks| {
             Ok((Descriptor::<DescriptorPublicKey>::$inner_struct($inner_struct::$sortedmulti_constructor(k, pks)?), PhantomData::<$ctx>))
@@ -48,7 +48,7 @@ macro_rules! impl_top_level_sh {
     }};
 
     ( $inner_struct:ident, $constructor:ident, $sortedmulti_constructor:ident, $ctx:ident, $( $minisc:tt )* ) => {{
-        use $crate::miniscript::descriptor::{$inner_struct, Descriptor, DescriptorPublicKey};
+        use $crate::miniscript_doge::descriptor::{$inner_struct, Descriptor, DescriptorPublicKey};
 
         $crate::fragment!($( $minisc )*)
             .and_then(|(minisc, keymap, networks)| Ok(($inner_struct::$constructor(minisc)?, keymap, networks)))
@@ -60,11 +60,11 @@ macro_rules! impl_top_level_sh {
 #[macro_export]
 macro_rules! impl_top_level_pk {
     ( $inner_type:ident, $ctx:ty, $key:expr ) => {{
-        use $crate::miniscript::descriptor::$inner_type;
+        use $crate::miniscript_doge::descriptor::$inner_type;
 
         #[allow(unused_imports)]
         use $crate::keys::{DescriptorKey, IntoDescriptorKey};
-        let secp = $crate::bitcoin::secp256k1::Secp256k1::new();
+        let secp = $crate::dogecoin::secp256k1::Secp256k1::new();
 
         $key.into_descriptor_key()
             .and_then(|key: DescriptorKey<$ctx>| key.extract(&secp))
@@ -79,8 +79,8 @@ macro_rules! impl_leaf_opcode {
     ( $terminal_variant:ident ) => {{
         use $crate::descriptor::CheckMiniscript;
 
-        $crate::miniscript::Miniscript::from_ast(
-            $crate::miniscript::miniscript::decode::Terminal::$terminal_variant,
+        $crate::miniscript_doge::Miniscript::from_ast(
+            $crate::miniscript_doge::miniscript_doge::decode::Terminal::$terminal_variant,
         )
         .map_err($crate::descriptor::DescriptorError::Miniscript)
         .and_then(|minisc| {
@@ -90,7 +90,7 @@ macro_rules! impl_leaf_opcode {
         .map(|minisc| {
             (
                 minisc,
-                $crate::miniscript::descriptor::KeyMap::default(),
+                $crate::miniscript_doge::descriptor::KeyMap::default(),
                 $crate::keys::any_network(),
             )
         })
@@ -103,8 +103,8 @@ macro_rules! impl_leaf_opcode_value {
     ( $terminal_variant:ident, $value:expr ) => {{
         use $crate::descriptor::CheckMiniscript;
 
-        $crate::miniscript::Miniscript::from_ast(
-            $crate::miniscript::miniscript::decode::Terminal::$terminal_variant($value),
+        $crate::miniscript_doge::Miniscript::from_ast(
+            $crate::miniscript_doge::Terminal::$terminal_variant($value),
         )
         .map_err($crate::descriptor::DescriptorError::Miniscript)
         .and_then(|minisc| {
@@ -114,7 +114,7 @@ macro_rules! impl_leaf_opcode_value {
         .map(|minisc| {
             (
                 minisc,
-                $crate::miniscript::descriptor::KeyMap::default(),
+                $crate::miniscript_doge::descriptor::KeyMap::default(),
                 $crate::keys::any_network(),
             )
         })
@@ -127,8 +127,8 @@ macro_rules! impl_leaf_opcode_value_two {
     ( $terminal_variant:ident, $one:expr, $two:expr ) => {{
         use $crate::descriptor::CheckMiniscript;
 
-        $crate::miniscript::Miniscript::from_ast(
-            $crate::miniscript::miniscript::decode::Terminal::$terminal_variant($one, $two),
+        $crate::miniscript_doge::Miniscript::from_ast(
+            $crate::miniscript_doge::Terminal::$terminal_variant($one, $two),
         )
         .map_err($crate::descriptor::DescriptorError::Miniscript)
         .and_then(|minisc| {
@@ -138,7 +138,7 @@ macro_rules! impl_leaf_opcode_value_two {
         .map(|minisc| {
             (
                 minisc,
-                $crate::miniscript::descriptor::KeyMap::default(),
+                $crate::miniscript_doge::descriptor::KeyMap::default(),
                 $crate::keys::any_network(),
             )
         })
@@ -160,7 +160,7 @@ macro_rules! impl_node_opcode_two {
                 // join key_maps
                 a_keymap.extend(b_keymap.into_iter());
 
-                let minisc = $crate::miniscript::Miniscript::from_ast($crate::miniscript::miniscript::decode::Terminal::$terminal_variant(
+                let minisc = $crate::miniscript_doge::Miniscript::from_ast($crate::miniscript_doge::Terminal::$terminal_variant(
                     std::sync::Arc::new(a_minisc),
                     std::sync::Arc::new(b_minisc),
                 ))?;
@@ -191,7 +191,7 @@ macro_rules! impl_node_opcode_three {
                 let networks = $crate::keys::merge_networks(&a_networks, &b_networks);
                 let networks = $crate::keys::merge_networks(&networks, &c_networks);
 
-                let minisc = $crate::miniscript::Miniscript::from_ast($crate::miniscript::miniscript::decode::Terminal::$terminal_variant(
+                let minisc = $crate::miniscript_doge::Miniscript::from_ast($crate::miniscript_doge::Terminal::$terminal_variant(
                     std::sync::Arc::new(a_minisc),
                     std::sync::Arc::new(b_minisc),
                     std::sync::Arc::new(c_minisc),
@@ -208,12 +208,12 @@ macro_rules! impl_node_opcode_three {
 #[macro_export]
 macro_rules! impl_sortedmulti {
     ( $build_desc:expr, sortedmulti_vec ( $thresh:expr, $keys:expr ) ) => ({
-        let secp = $crate::bitcoin::secp256k1::Secp256k1::new();
+        let secp = $crate::dogecoin::secp256k1::Secp256k1::new();
         $crate::keys::make_sortedmulti($thresh, $keys, $build_desc, &secp)
     });
     ( $build_desc:expr, sortedmulti ( $thresh:expr $(, $key:expr )+ ) ) => ({
         use $crate::keys::IntoDescriptorKey;
-        let secp = $crate::bitcoin::secp256k1::Secp256k1::new();
+        let secp = $crate::dogecoin::secp256k1::Secp256k1::new();
 
         let keys = vec![
             $(
@@ -237,10 +237,10 @@ macro_rules! apply_modifier {
         $inner
             .map_err(|e| -> $crate::descriptor::DescriptorError { e.into() })
             .and_then(|(minisc, keymap, networks)| {
-                let minisc = $crate::miniscript::Miniscript::from_ast(
-                    $crate::miniscript::miniscript::decode::Terminal::$terminal_variant(
-                        std::sync::Arc::new(minisc),
-                    ),
+                let minisc = $crate::miniscript_doge::Miniscript::from_ast(
+                    $crate::miniscript_doge::Terminal::$terminal_variant(std::sync::Arc::new(
+                        minisc,
+                    )),
                 )?;
 
                 minisc.check_minsicript()?;
@@ -326,7 +326,7 @@ macro_rules! apply_modifier {
 ///
 /// ```
 /// # use std::str::FromStr;
-/// let (my_descriptor, my_keys_map, networks) = bdk::descriptor!(sh(wsh(and_v(v:pk("cVt4o7BGAig1UXywgGSmARhxMdzP5qvQsxKkSsc1XEkw3tDTQFpy"),older(50)))))?;
+/// let (my_descriptor, my_keys_map, networks) = bdk_doge::descriptor!(sh(wsh(and_v(v:pk("cVt4o7BGAig1UXywgGSmARhxMdzP5qvQsxKkSsc1XEkw3tDTQFpy"),older(50)))))?;
 /// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
 ///
@@ -340,14 +340,14 @@ macro_rules! apply_modifier {
 ///
 /// ```
 /// # use std::str::FromStr;
-/// let my_key_1 = bitcoin::PublicKey::from_str(
+/// let my_key_1 = dogecoin::PublicKey::from_str(
 ///     "02e96fe52ef0e22d2f131dd425ce1893073a3c6ad20e8cac36726393dfb4856a4c",
 /// )?;
 /// let my_key_2 =
-///     bitcoin::PrivateKey::from_wif("cVt4o7BGAig1UXywgGSmARhxMdzP5qvQsxKkSsc1XEkw3tDTQFpy")?;
+///     dogecoin::PrivateKey::from_wif("cVt4o7BGAig1UXywgGSmARhxMdzP5qvQsxKkSsc1XEkw3tDTQFpy")?;
 /// let my_timelock = 50;
 ///
-/// let (descriptor_a, key_map_a, networks) = bdk::descriptor! {
+/// let (descriptor_a, key_map_a, networks) = bdk_doge::descriptor! {
 ///     wsh (
 ///         thresh(2, pk(my_key_1), s:pk(my_key_2), s:d:v:older(my_timelock))
 ///     )
@@ -355,11 +355,11 @@ macro_rules! apply_modifier {
 ///
 /// #[rustfmt::skip]
 /// let b_items = vec![
-///     bdk::fragment!(pk(my_key_1))?,
-///     bdk::fragment!(s:pk(my_key_2))?,
-///     bdk::fragment!(s:d:v:older(my_timelock))?,
+///     bdk_doge::fragment!(pk(my_key_1))?,
+///     bdk_doge::fragment!(s:pk(my_key_2))?,
+///     bdk_doge::fragment!(s:d:v:older(my_timelock))?,
 /// ];
-/// let (descriptor_b, mut key_map_b, networks) = bdk::descriptor!(wsh(thresh_vec(2, b_items)))?;
+/// let (descriptor_b, mut key_map_b, networks) = bdk_doge::descriptor!(wsh(thresh_vec(2, b_items)))?;
 ///
 /// assert_eq!(descriptor_a, descriptor_b);
 /// assert_eq!(key_map_a.len(), key_map_b.len());
@@ -372,13 +372,13 @@ macro_rules! apply_modifier {
 ///
 /// ```
 /// # use std::str::FromStr;
-/// let my_key_1 = bitcoin::PublicKey::from_str(
+/// let my_key_1 = dogecoin::PublicKey::from_str(
 ///     "02e96fe52ef0e22d2f131dd425ce1893073a3c6ad20e8cac36726393dfb4856a4c",
 /// )?;
 /// let my_key_2 =
-///     bitcoin::PrivateKey::from_wif("cVt4o7BGAig1UXywgGSmARhxMdzP5qvQsxKkSsc1XEkw3tDTQFpy")?;
+///     dogecoin::PrivateKey::from_wif("cVt4o7BGAig1UXywgGSmARhxMdzP5qvQsxKkSsc1XEkw3tDTQFpy")?;
 ///
-/// let (descriptor, key_map, networks) = bdk::descriptor! {
+/// let (descriptor, key_map, networks) = bdk_doge::descriptor! {
 ///     wsh (
 ///         multi(2, my_key_1, my_key_2)
 ///     )
@@ -392,9 +392,9 @@ macro_rules! apply_modifier {
 ///
 /// ```
 /// let my_key =
-///     bitcoin::PrivateKey::from_wif("cVt4o7BGAig1UXywgGSmARhxMdzP5qvQsxKkSsc1XEkw3tDTQFpy")?;
+///     dogecoin::PrivateKey::from_wif("cVt4o7BGAig1UXywgGSmARhxMdzP5qvQsxKkSsc1XEkw3tDTQFpy")?;
 ///
-/// let (descriptor, key_map, networks) = bdk::descriptor!(wpkh(my_key))?;
+/// let (descriptor, key_map, networks) = bdk_doge::descriptor!(wpkh(my_key))?;
 /// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
 #[macro_export]
@@ -413,15 +413,15 @@ macro_rules! descriptor {
         $crate::descriptor!( bare ( pk ( $key ) ) )
     });
     ( pkh ( $key:expr ) ) => ({
-        use $crate::miniscript::descriptor::{Descriptor, DescriptorPublicKey};
+        use $crate::miniscript_doge::descriptor::{Descriptor, DescriptorPublicKey};
 
-        $crate::impl_top_level_pk!(Pkh, $crate::miniscript::Legacy, $key)
+        $crate::impl_top_level_pk!(Pkh, $crate::miniscript_doge::Legacy, $key)
             .map(|(a, b, c)| (Descriptor::<DescriptorPublicKey>::Pkh(a), b, c))
     });
     ( wpkh ( $key:expr ) ) => ({
-        use $crate::miniscript::descriptor::{Descriptor, DescriptorPublicKey};
+        use $crate::miniscript_doge::descriptor::{Descriptor, DescriptorPublicKey};
 
-        $crate::impl_top_level_pk!(Wpkh, $crate::miniscript::Segwitv0, $key)
+        $crate::impl_top_level_pk!(Wpkh, $crate::miniscript_doge::Segwitv0, $key)
             .and_then(|(a, b, c)| Ok((a?, b, c)))
             .map(|(a, b, c)| (Descriptor::<DescriptorPublicKey>::Wpkh(a), b, c))
     });
@@ -429,9 +429,9 @@ macro_rules! descriptor {
         $crate::descriptor!(shwpkh ( $key ))
     });
     ( shwpkh ( $key:expr ) ) => ({
-        use $crate::miniscript::descriptor::{Descriptor, DescriptorPublicKey, Sh};
+        use $crate::miniscript_doge::descriptor::{Descriptor, DescriptorPublicKey, Sh};
 
-        $crate::impl_top_level_pk!(Wpkh, $crate::miniscript::Segwitv0, $key)
+        $crate::impl_top_level_pk!(Wpkh, $crate::miniscript_doge::Segwitv0, $key)
             .and_then(|(a, b, c)| Ok((a?, b, c)))
             .and_then(|(a, b, c)| Ok((Descriptor::<DescriptorPublicKey>::Sh(Sh::new_wpkh(a.into_inner())?), b, c)))
     });
@@ -565,7 +565,7 @@ macro_rules! fragment {
         $crate::impl_leaf_opcode!(False)
     });
     ( pk_k ( $key:expr ) ) => ({
-        let secp = $crate::bitcoin::secp256k1::Secp256k1::new();
+        let secp = $crate::dogecoin::secp256k1::Secp256k1::new();
         $crate::keys::make_pk($key, &secp)
     });
     ( pk ( $key:expr ) ) => ({
@@ -614,7 +614,7 @@ macro_rules! fragment {
         $crate::impl_node_opcode_two!(OrI, $( $inner )*)
     });
     ( thresh_vec ( $thresh:expr, $items:expr ) ) => ({
-        use $crate::miniscript::descriptor::KeyMap;
+        use $crate::miniscript_doge::descriptor::KeyMap;
 
         let (items, key_maps_networks): (Vec<_>, Vec<_>) = $items.into_iter().map(|(a, b, c)| (a, (b, c))).unzip();
         let items = items.into_iter().map(std::sync::Arc::new).collect();
@@ -640,7 +640,7 @@ macro_rules! fragment {
     });
     ( multi ( $thresh:expr $(, $key:expr )+ ) ) => ({
         use $crate::keys::IntoDescriptorKey;
-        let secp = $crate::bitcoin::secp256k1::Secp256k1::new();
+        let secp = $crate::dogecoin::secp256k1::Secp256k1::new();
 
         let keys = vec![
             $(
@@ -664,18 +664,18 @@ macro_rules! fragment {
 
 #[cfg(test)]
 mod test {
-    use bitcoin::hashes::hex::ToHex;
-    use bitcoin::secp256k1::Secp256k1;
-    use miniscript::descriptor::{DescriptorPublicKey, DescriptorTrait, KeyMap};
-    use miniscript::{Descriptor, Legacy, Segwitv0};
+    use dogecoin::hashes::hex::ToHex;
+    use dogecoin::secp256k1::Secp256k1;
+    use miniscript_doge::descriptor::{DescriptorPublicKey, DescriptorTrait, KeyMap};
+    use miniscript_doge::{Descriptor, Legacy, Segwitv0};
 
     use std::str::FromStr;
 
     use crate::descriptor::{DescriptorError, DescriptorMeta};
     use crate::keys::{DescriptorKey, IntoDescriptorKey, ValidNetworks};
-    use bitcoin::network::constants::Network::{Bitcoin, Regtest, Signet, Testnet};
-    use bitcoin::util::bip32;
-    use bitcoin::PrivateKey;
+    use dogecoin::network::constants::Network::{Bitcoin, Regtest, Signet, Testnet};
+    use dogecoin::util::bip32;
+    use dogecoin::PrivateKey;
 
     use crate::descriptor::derived::AsDerived;
 
@@ -718,11 +718,11 @@ mod test {
 
     #[test]
     fn test_fixed_legacy_descriptors() {
-        let pubkey1 = bitcoin::PublicKey::from_str(
+        let pubkey1 = dogecoin::PublicKey::from_str(
             "03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd",
         )
         .unwrap();
-        let pubkey2 = bitcoin::PublicKey::from_str(
+        let pubkey2 = dogecoin::PublicKey::from_str(
             "032e58afe51f9ed8ad3cc7897f634d881fdbe49a81564629ded8156bebd2ffd1af",
         )
         .unwrap();
@@ -755,11 +755,11 @@ mod test {
 
     #[test]
     fn test_fixed_segwitv0_descriptors() {
-        let pubkey1 = bitcoin::PublicKey::from_str(
+        let pubkey1 = dogecoin::PublicKey::from_str(
             "03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd",
         )
         .unwrap();
-        let pubkey2 = bitcoin::PublicKey::from_str(
+        let pubkey2 = dogecoin::PublicKey::from_str(
             "032e58afe51f9ed8ad3cc7897f634d881fdbe49a81564629ded8156bebd2ffd1af",
         )
         .unwrap();
@@ -792,11 +792,11 @@ mod test {
 
     #[test]
     fn test_fixed_threeop_descriptors() {
-        let redeem_key = bitcoin::PublicKey::from_str(
+        let redeem_key = dogecoin::PublicKey::from_str(
             "03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd",
         )
         .unwrap();
-        let move_key = bitcoin::PublicKey::from_str(
+        let move_key = dogecoin::PublicKey::from_str(
             "032e58afe51f9ed8ad3cc7897f634d881fdbe49a81564629ded8156bebd2ffd1af",
         )
         .unwrap();

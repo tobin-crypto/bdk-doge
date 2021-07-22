@@ -25,10 +25,10 @@
 //!
 //! ```
 //! # use std::str::FromStr;
-//! # use bitcoin::*;
-//! # use bdk::wallet::coin_selection::*;
-//! # use bdk::database::Database;
-//! # use bdk::*;
+//! # use dogecoin::*;
+//! # use bdk_doge::wallet::coin_selection::*;
+//! # use bdk_doge::database::Database;
+//! # use bdk_doge::*;
 //! # const TXIN_BASE_WEIGHT: usize = (32 + 4 + 4 + 1) * 4;
 //! #[derive(Debug)]
 //! struct AlwaysSpendEverything;
@@ -42,7 +42,7 @@
 //!         fee_rate: FeeRate,
 //!         amount_needed: u64,
 //!         fee_amount: f32,
-//!     ) -> Result<CoinSelectionResult, bdk::Error> {
+//!     ) -> Result<CoinSelectionResult, bdk_doge::Error> {
 //!         let mut selected_amount = 0;
 //!         let mut additional_weight = 0;
 //!         let all_utxos_selected = required_utxos
@@ -61,7 +61,7 @@
 //!         let amount_needed_with_fees =
 //!             (fee_amount + additional_fees).ceil() as u64 + amount_needed;
 //!         if amount_needed_with_fees > selected_amount {
-//!             return Err(bdk::Error::InsufficientFunds {
+//!             return Err(bdk_doge::Error::InsufficientFunds {
 //!                 needed: amount_needed_with_fees,
 //!                 available: selected_amount,
 //!             });
@@ -86,7 +86,7 @@
 //!
 //! // inspect, sign, broadcast, ...
 //!
-//! # Ok::<(), bdk::Error>(())
+//! # Ok::<(), bdk_doge::Error>(())
 //! ```
 
 use crate::types::FeeRate;
@@ -535,7 +535,7 @@ impl BranchAndBoundCoinSelection {
 mod test {
     use std::str::FromStr;
 
-    use bitcoin::{OutPoint, Script, TxOut};
+    use dogecoin::{OutPoint, Script, TxOut};
 
     use super::*;
     use crate::database::MemoryDatabase;

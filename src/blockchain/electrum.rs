@@ -11,17 +11,17 @@
 
 //! Electrum
 //!
-//! This module defines a [`Blockchain`] struct that wraps an [`electrum_client::Client`]
+//! This module defines a [`Blockchain`] struct that wraps an [`electrum_client_doge::Client`]
 //! and implements the logic required to populate the wallet's [database](crate::database::Database) by
 //! querying the inner client.
 //!
 //! ## Example
 //!
 //! ```no_run
-//! # use bdk::blockchain::electrum::ElectrumBlockchain;
-//! let client = electrum_client::Client::new("ssl://electrum.blockstream.info:50002")?;
+//! # use bdk_doge::blockchain::electrum::ElectrumBlockchain;
+//! let client = electrum_client_doge::Client::new("ssl://electrum.blockstream.info:50002")?;
 //! let blockchain = ElectrumBlockchain::from(client);
-//! # Ok::<(), bdk::Error>(())
+//! # Ok::<(), bdk_doge::Error>(())
 //! ```
 
 use std::collections::HashSet;
@@ -29,9 +29,9 @@ use std::collections::HashSet;
 #[allow(unused_imports)]
 use log::{debug, error, info, trace};
 
-use bitcoin::{BlockHeader, Script, Transaction, Txid};
+use dogecoin::{BlockHeader, Script, Transaction, Txid};
 
-use electrum_client::{Client, ConfigBuilder, ElectrumApi, Socks5Config};
+use electrum_client_doge::{Client, ConfigBuilder, ElectrumApi, Socks5Config};
 
 use self::utils::{ElectrumLikeSync, ElsGetHistoryRes};
 use super::*;
@@ -112,7 +112,7 @@ impl ElectrumLikeSync for Client {
                     .map(|v| {
                         v.into_iter()
                             .map(
-                                |electrum_client::GetHistoryRes {
+                                |electrum_client_doge::GetHistoryRes {
                                      height, tx_hash, ..
                                  }| ElsGetHistoryRes {
                                     height,

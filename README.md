@@ -1,3 +1,25 @@
+# Dogecoin fork of bdk
+
+This repository was forked from
+[bdk](https://github.com/bitcoindevkit/bdk) in an effort
+to work with Dogecoin in Rust.
+
+The dogecoin patchset is extremely small, currently all we do is:
+
+- Add this section to the README.
+- Rename the package.
+- Depend upon [rust-dogecoin](https://github.com/tobin-crypto/rust-dogecoin)
+  (dogecoin fork of
+  [rust-bitcoin](https://github.com/rust-bitcoin/rust-bitcoin)).
+- Depend upon [electrum-client-doge](https://github.com/tobin-crypto/electrum-client-doge)
+  (dogecoin fork of
+  [bitcoin_hashes](https://github.com/bitcoindevkit/electrum-client)).
+- Depend upon [rust-miniscript-doge](https://github.com/tobin-crypto/rust-miniscript-doge)
+  (dogecoin fork of
+  [rust-bitcoin](https://github.com/rust-bitcoin/rust-miniscript)).
+
+## ----- Original bdk README ------
+
 <div align="center">
   <h1>BDK</h1>
 
@@ -39,18 +61,18 @@ The `bdk` library aims to be the core building block for Bitcoin wallets of any 
 ### Sync the balance of a descriptor
 
 ```rust,no_run
-use bdk::Wallet;
-use bdk::database::MemoryDatabase;
-use bdk::blockchain::{noop_progress, ElectrumBlockchain};
+use bdk_doge::Wallet;
+use bdk_doge::database::MemoryDatabase;
+use bdk_doge::blockchain::{noop_progress, ElectrumBlockchain};
 
-use bdk::electrum_client::Client;
+use bdk_doge::electrum_client_doge::Client;
 
-fn main() -> Result<(), bdk::Error> {
+fn main() -> Result<(), bdk_doge::Error> {
     let client = Client::new("ssl://electrum.blockstream.info:60002")?;
     let wallet = Wallet::new(
         "wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/0/*)",
         Some("wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/1/*)"),
-        bitcoin::Network::Testnet,
+        dogecoin::Network::Testnet,
         MemoryDatabase::default(),
         ElectrumBlockchain::from(client)
     )?;
@@ -66,14 +88,14 @@ fn main() -> Result<(), bdk::Error> {
 ### Generate a few addresses
 
 ```rust
-use bdk::{Wallet, database::MemoryDatabase};
-use bdk::wallet::AddressIndex::New;
+use bdk_doge::{Wallet, database::MemoryDatabase};
+use bdk_doge::wallet::AddressIndex::New;
 
-fn main() -> Result<(), bdk::Error> {
+fn main() -> Result<(), bdk_doge::Error> {
     let wallet = Wallet::new_offline(
         "wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/0/*)",
         Some("wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/1/*)"),
-        bitcoin::Network::Testnet,
+        dogecoin::Network::Testnet,
         MemoryDatabase::default(),
     )?;
 
@@ -88,21 +110,21 @@ fn main() -> Result<(), bdk::Error> {
 ### Create a transaction
 
 ```rust,no_run
-use bdk::{FeeRate, Wallet};
-use bdk::database::MemoryDatabase;
-use bdk::blockchain::{noop_progress, ElectrumBlockchain};
+use bdk_doge::{FeeRate, Wallet};
+use bdk_doge::database::MemoryDatabase;
+use bdk_doge::blockchain::{noop_progress, ElectrumBlockchain};
 
-use bdk::electrum_client::Client;
-use bdk::wallet::AddressIndex::New;
+use bdk_doge::electrum_client_doge::Client;
+use bdk_doge::wallet::AddressIndex::New;
 
-use bitcoin::consensus::serialize;
+use dogecoin::consensus::serialize;
 
-fn main() -> Result<(), bdk::Error> {
+fn main() -> Result<(), bdk_doge::Error> {
     let client = Client::new("ssl://electrum.blockstream.info:60002")?;
     let wallet = Wallet::new(
         "wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/0/*)",
         Some("wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/1/*)"),
-        bitcoin::Network::Testnet,
+        dogecoin::Network::Testnet,
         MemoryDatabase::default(),
         ElectrumBlockchain::from(client)
     )?;
@@ -130,15 +152,15 @@ fn main() -> Result<(), bdk::Error> {
 ### Sign a transaction
 
 ```rust,no_run
-use bdk::{Wallet, SignOptions, database::MemoryDatabase};
+use bdk_doge::{Wallet, SignOptions, database::MemoryDatabase};
 
-use bitcoin::consensus::deserialize;
+use dogecoin::consensus::deserialize;
 
-fn main() -> Result<(), bdk::Error> {
+fn main() -> Result<(), bdk_doge::Error> {
     let wallet = Wallet::new_offline(
         "wpkh([c258d2e4/84h/1h/0h]tprv8griRPhA7342zfRyB6CqeKF8CJDXYu5pgnj1cjL1u2ngKcJha5jjTRimG82ABzJQ4MQe71CV54xfn25BbhCNfEGGJZnxvCDQCd6JkbvxW6h/0/*)",
         Some("wpkh([c258d2e4/84h/1h/0h]tprv8griRPhA7342zfRyB6CqeKF8CJDXYu5pgnj1cjL1u2ngKcJha5jjTRimG82ABzJQ4MQe71CV54xfn25BbhCNfEGGJZnxvCDQCd6JkbvxW6h/1/*)"),
-        bitcoin::Network::Testnet,
+        dogecoin::Network::Testnet,
         MemoryDatabase::default(),
     )?;
 

@@ -49,17 +49,17 @@
 
 ### Example
 ```no_run
-use bdk::Wallet;
-use bdk::database::MemoryDatabase;
-use bdk::blockchain::{noop_progress, ElectrumBlockchain};
-use bdk::electrum_client::Client;
+use bdk_doge::Wallet;
+use bdk_doge::database::MemoryDatabase;
+use bdk_doge::blockchain::{noop_progress, ElectrumBlockchain};
+use bdk_doge::electrum_client_doge::Client;
 
-fn main() -> Result<(), bdk::Error> {
+fn main() -> Result<(), bdk_doge::Error> {
     let client = Client::new("ssl://electrum.blockstream.info:60002")?;
     let wallet = Wallet::new(
         "wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/0/*)",
         Some("wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/1/*)"),
-        bitcoin::Network::Testnet,
+        dogecoin::Network::Testnet,
         MemoryDatabase::default(),
         ElectrumBlockchain::from(client)
     )?;
@@ -78,15 +78,15 @@ fn main() -> Result<(), bdk::Error> {
 //!
 //! ### Example
 //! ```
-//! use bdk::{Wallet};
-//! use bdk::database::MemoryDatabase;
-//! use bdk::wallet::AddressIndex::New;
+//! use bdk_doge::{Wallet};
+//! use bdk_doge::database::MemoryDatabase;
+//! use bdk_doge::wallet::AddressIndex::New;
 //!
-//! fn main() -> Result<(), bdk::Error> {
+//! fn main() -> Result<(), bdk_doge::Error> {
 //! let wallet = Wallet::new_offline(
 //!         "wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/0/*)",
 //!         Some("wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/1/*)"),
-//!         bitcoin::Network::Testnet,
+//!         dogecoin::Network::Testnet,
 //!         MemoryDatabase::default(),
 //!     )?;
 //!
@@ -104,20 +104,20 @@ fn main() -> Result<(), bdk::Error> {
 
 ### Example
 ```no_run
-use bdk::{FeeRate, Wallet};
-use bdk::database::MemoryDatabase;
-use bdk::blockchain::{noop_progress, ElectrumBlockchain};
-use bdk::electrum_client::Client;
+use bdk_doge::{FeeRate, Wallet};
+use bdk_doge::database::MemoryDatabase;
+use bdk_doge::blockchain::{noop_progress, ElectrumBlockchain};
+use bdk_doge::electrum_client_doge::Client;
 
-use bitcoin::consensus::serialize;
-use bdk::wallet::AddressIndex::New;
+use dogecoin::consensus::serialize;
+use bdk_doge::wallet::AddressIndex::New;
 
-fn main() -> Result<(), bdk::Error> {
+fn main() -> Result<(), bdk_doge::Error> {
     let client = Client::new("ssl://electrum.blockstream.info:60002")?;
     let wallet = Wallet::new(
         "wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/0/*)",
         Some("wpkh([c258d2e4/84h/1h/0h]tpubDDYkZojQFQjht8Tm4jsS3iuEmKjTiEGjG6KnuFNKKJb5A6ZUCUZKdvLdSDWofKi4ToRCwb9poe1XdqfUnP4jaJjCB2Zwv11ZLgSbnZSNecE/1/*)"),
-        bitcoin::Network::Testnet,
+        dogecoin::Network::Testnet,
         MemoryDatabase::default(),
         ElectrumBlockchain::from(client)
     )?;
@@ -150,16 +150,16 @@ fn main() -> Result<(), bdk::Error> {
 //! ```no_run
 //! use std::str::FromStr;
 //!
-//! use bitcoin::util::psbt::PartiallySignedTransaction as Psbt;
+//! use dogecoin::util::psbt::PartiallySignedTransaction as Psbt;
 //!
-//! use bdk::{Wallet, SignOptions};
-//! use bdk::database::MemoryDatabase;
+//! use bdk_doge::{Wallet, SignOptions};
+//! use bdk_doge::database::MemoryDatabase;
 //!
-//! fn main() -> Result<(), bdk::Error> {
+//! fn main() -> Result<(), bdk_doge::Error> {
 //!     let wallet = Wallet::new_offline(
 //!         "wpkh([c258d2e4/84h/1h/0h]tprv8griRPhA7342zfRyB6CqeKF8CJDXYu5pgnj1cjL1u2ngKcJha5jjTRimG82ABzJQ4MQe71CV54xfn25BbhCNfEGGJZnxvCDQCd6JkbvxW6h/0/*)",
 //!         Some("wpkh([c258d2e4/84h/1h/0h]tprv8griRPhA7342zfRyB6CqeKF8CJDXYu5pgnj1cjL1u2ngKcJha5jjTRimG82ABzJQ4MQe71CV54xfn25BbhCNfEGGJZnxvCDQCd6JkbvxW6h/1/*)"),
-//!         bitcoin::Network::Testnet,
+//!         dogecoin::Network::Testnet,
 //!         MemoryDatabase::default(),
 //!     )?;
 //!
@@ -198,9 +198,9 @@ fn main() -> Result<(), bdk::Error> {
 //! * `esplora`: [`esplora`](crate::blockchain::esplora) client protocol for interacting with blockstream [electrs](https://github.com/Blockstream/electrs) servers
 //! * `key-value-db`: key value [`database`](crate::database) based on [`sled`](crate::sled) for caching blockchain data
 
-pub extern crate bitcoin;
+pub extern crate dogecoin;
 extern crate log;
-pub extern crate miniscript;
+pub extern crate miniscript_doge;
 extern crate serde;
 #[macro_use]
 extern crate serde_json;
@@ -226,7 +226,7 @@ extern crate lazy_static;
 pub extern crate bitcoincore_rpc;
 
 #[cfg(feature = "electrum")]
-pub extern crate electrum_client;
+pub extern crate electrum_client_doge;
 
 #[cfg(feature = "esplora")]
 pub extern crate reqwest;
@@ -265,6 +265,7 @@ pub fn version() -> &'static str {
 // We should consider putting this under a feature flag but we need the macro in doctets so we need
 // to wait until https://github.com/rust-lang/rust/issues/67295 is fixed.
 //
+
 // Stuff in here is too rough to document atm
 #[doc(hidden)]
 pub mod testutils;

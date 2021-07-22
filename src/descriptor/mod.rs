@@ -17,15 +17,15 @@
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::ops::Deref;
 
-use bitcoin::util::bip32::{
+use dogecoin::util::bip32::{
     ChildNumber, DerivationPath, ExtendedPrivKey, ExtendedPubKey, Fingerprint, KeySource,
 };
-use bitcoin::util::psbt;
-use bitcoin::{Network, PublicKey, Script, TxOut};
+use dogecoin::util::psbt;
+use dogecoin::{Network, PublicKey, Script, TxOut};
 
-use miniscript::descriptor::{DescriptorPublicKey, DescriptorType, DescriptorXKey, Wildcard};
-pub use miniscript::{descriptor::KeyMap, Descriptor, Legacy, Miniscript, ScriptContext, Segwitv0};
-use miniscript::{DescriptorTrait, ForEachKey, TranslatePk};
+use miniscript_doge::descriptor::{DescriptorPublicKey, DescriptorType, DescriptorXKey, Wildcard};
+pub use miniscript_doge::{descriptor::KeyMap, Descriptor, Legacy, Miniscript, ScriptContext, Segwitv0};
+use miniscript_doge::{DescriptorTrait, ForEachKey, TranslatePk};
 
 use crate::descriptor::policy::BuildSatisfaction;
 
@@ -56,8 +56,8 @@ pub type DerivedDescriptor<'s> = Descriptor<DerivedDescriptorKey<'s>>;
 /// Alias for the type of maps that represent derivation paths in a [`psbt::Input`] or
 /// [`psbt::Output`]
 ///
-/// [`psbt::Input`]: bitcoin::util::psbt::Input
-/// [`psbt::Output`]: bitcoin::util::psbt::Output
+/// [`psbt::Input`]: dogecoin::util::psbt::Input
+/// [`psbt::Output`]: dogecoin::util::psbt::Output
 pub type HdKeyPaths = BTreeMap<PublicKey, KeySource>;
 
 /// Trait for types which can be converted into an [`ExtendedDescriptor`] and a [`KeyMap`] usable by a wallet in a specific [`Network`]
@@ -126,11 +126,11 @@ impl IntoWalletDescriptor for (ExtendedDescriptor, KeyMap) {
 
         let check_key = |pk: &DescriptorPublicKey| {
             let (pk, _, networks) = if self.0.is_witness() {
-                let desciptor_key: DescriptorKey<miniscript::Segwitv0> =
+                let desciptor_key: DescriptorKey<miniscript_doge::Segwitv0> =
                     pk.clone().into_descriptor_key()?;
                 desciptor_key.extract(secp)?
             } else {
-                let desciptor_key: DescriptorKey<miniscript::Legacy> =
+                let desciptor_key: DescriptorKey<miniscript_doge::Legacy> =
                     pk.clone().into_descriptor_key()?;
                 desciptor_key.extract(secp)?
             };
@@ -237,14 +237,14 @@ pub(crate) fn into_wallet_descriptor_checked<T: IntoWalletDescriptor>(
 
 #[doc(hidden)]
 /// Used internally mainly by the `descriptor!()` and `fragment!()` macros
-pub trait CheckMiniscript<Ctx: miniscript::ScriptContext> {
-    fn check_minsicript(&self) -> Result<(), miniscript::Error>;
+pub trait CheckMiniscript<Ctx: miniscript_doge::ScriptContext> {
+    fn check_minsicript(&self) -> Result<(), miniscript_doge::Error>;
 }
 
-impl<Ctx: miniscript::ScriptContext, Pk: miniscript::MiniscriptKey> CheckMiniscript<Ctx>
-    for miniscript::Miniscript<Pk, Ctx>
+impl<Ctx: miniscript_doge::ScriptContext, Pk: miniscript_doge::MiniscriptKey> CheckMiniscript<Ctx>
+    for miniscript_doge::Miniscript<Pk, Ctx>
 {
-    fn check_minsicript(&self) -> Result<(), miniscript::Error> {
+    fn check_minsicript(&self) -> Result<(), miniscript_doge::Error> {
         Ctx::check_global_validity(self)?;
 
         Ok(())
@@ -534,10 +534,10 @@ impl<'s> DerivedDescriptorMeta for DerivedDescriptor<'s> {
 mod test {
     use std::str::FromStr;
 
-    use bitcoin::consensus::encode::deserialize;
-    use bitcoin::hashes::hex::FromHex;
-    use bitcoin::secp256k1::Secp256k1;
-    use bitcoin::util::{bip32, psbt};
+    use dogecoin::consensus::encode::deserialize;
+    use dogecoin::hashes::hex::FromHex;
+    use dogecoin::secp256k1::Secp256k1;
+    use dogecoin::util::{bip32, psbt};
 
     use super::*;
     use crate::psbt::PsbtUtils;

@@ -9,11 +9,11 @@
 // You may not use this file except in accordance with one or both of these
 // licenses.
 
-use bdk::blockchain::compact_filters::*;
-use bdk::blockchain::noop_progress;
-use bdk::database::MemoryDatabase;
-use bdk::*;
-use bitcoin::*;
+use bdk_doge::blockchain::compact_filters::*;
+use bdk_doge::blockchain::noop_progress;
+use bdk_doge::database::MemoryDatabase;
+use bdk_doge::*;
+use dogecoin::*;
 use blockchain::compact_filters::CompactFiltersBlockchain;
 use blockchain::compact_filters::CompactFiltersError;
 use log::info;

@@ -19,10 +19,10 @@
 //!
 //! ```
 //! # use std::str::FromStr;
-//! # use bitcoin::*;
-//! # use bdk::database::*;
-//! # use bdk::wallet::export::*;
-//! # use bdk::*;
+//! # use dogecoin::*;
+//! # use bdk_doge::database::*;
+//! # use bdk_doge::wallet::export::*;
+//! # use bdk_doge::*;
 //! let import = r#"{
 //!     "descriptor": "wpkh([c258d2e4\/84h\/1h\/0h]tpubDD3ynpHgJQW8VvWRzQ5WFDCrs4jqVFGHB3vLC3r49XHJSqP8bHKdK4AriuUKLccK68zfzowx7YhmDN8SiSkgCDENUFx9qVw65YyqM78vyVe\/0\/*)",
 //!     "blockheight":1782088,
@@ -36,15 +36,15 @@
 //!     Network::Testnet,
 //!     MemoryDatabase::default(),
 //! )?;
-//! # Ok::<_, bdk::Error>(())
+//! # Ok::<_, bdk_doge::Error>(())
 //! ```
 //!
 //! ### Export a `Wallet`
 //! ```
-//! # use bitcoin::*;
-//! # use bdk::database::*;
-//! # use bdk::wallet::export::*;
-//! # use bdk::*;
+//! # use dogecoin::*;
+//! # use bdk_doge::database::*;
+//! # use bdk_doge::wallet::export::*;
+//! # use bdk_doge::*;
 //! let wallet = Wallet::new_offline(
 //!     "wpkh([c258d2e4/84h/1h/0h]tpubDD3ynpHgJQW8VvWRzQ5WFDCrs4jqVFGHB3vLC3r49XHJSqP8bHKdK4AriuUKLccK68zfzowx7YhmDN8SiSkgCDENUFx9qVw65YyqM78vyVe/0/*)",
 //!     Some("wpkh([c258d2e4/84h/1h/0h]tpubDD3ynpHgJQW8VvWRzQ5WFDCrs4jqVFGHB3vLC3r49XHJSqP8bHKdK4AriuUKLccK68zfzowx7YhmDN8SiSkgCDENUFx9qVw65YyqM78vyVe/1/*)"),
@@ -53,18 +53,18 @@
 //! )?;
 //! let export = WalletExport::export_wallet(&wallet, "exported wallet", true)
 //!     .map_err(ToString::to_string)
-//!     .map_err(bdk::Error::Generic)?;
+//!     .map_err(bdk_doge::Error::Generic)?;
 //!
 //! println!("Exported: {}", export.to_string());
-//! # Ok::<_, bdk::Error>(())
+//! # Ok::<_, bdk_doge::Error>(())
 //! ```
 
 use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
-use miniscript::descriptor::{ShInner, WshInner};
-use miniscript::{Descriptor, DescriptorPublicKey, ScriptContext, Terminal};
+use miniscript_doge::descriptor::{ShInner, WshInner};
+use miniscript_doge::{Descriptor, DescriptorPublicKey, ScriptContext, Terminal};
 
 use crate::database::BatchDatabase;
 use crate::wallet::Wallet;
@@ -206,7 +206,7 @@ impl WalletExport {
 mod test {
     use std::str::FromStr;
 
-    use bitcoin::{Network, Txid};
+    use dogecoin::{Network, Txid};
 
     use super::*;
     use crate::database::{memory::MemoryDatabase, BatchOperations};

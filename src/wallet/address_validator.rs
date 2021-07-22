@@ -28,11 +28,11 @@
 //!
 //! ```
 //! # use std::sync::Arc;
-//! # use bitcoin::*;
-//! # use bdk::address_validator::*;
-//! # use bdk::database::*;
-//! # use bdk::*;
-//! # use bdk::wallet::AddressIndex::New;
+//! # use dogecoin::*;
+//! # use bdk_doge::address_validator::*;
+//! # use bdk_doge::database::*;
+//! # use bdk_doge::*;
+//! # use bdk_doge::wallet::AddressIndex::New;
 //! #[derive(Debug)]
 //! struct PrintAddressAndContinue;
 //!
@@ -60,12 +60,12 @@
 //!
 //! let address = wallet.get_address(New)?;
 //! println!("Address: {}", address);
-//! # Ok::<(), bdk::Error>(())
+//! # Ok::<(), bdk_doge::Error>(())
 //! ```
 
 use std::fmt;
 
-use bitcoin::Script;
+use dogecoin::Script;
 
 use crate::descriptor::HdKeyPaths;
 use crate::types::KeychainKind;
@@ -125,7 +125,7 @@ mod test {
             &self,
             _keychain: KeychainKind,
             _hd_keypaths: &HdKeyPaths,
-            _script: &bitcoin::Script,
+            _script: &dogecoin::Script,
         ) -> Result<(), AddressValidatorError> {
             Err(AddressValidatorError::InvalidScript)
         }

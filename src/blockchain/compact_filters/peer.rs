@@ -19,16 +19,16 @@ use socks::{Socks5Stream, ToTargetAddr};
 
 use rand::{thread_rng, Rng};
 
-use bitcoin::consensus::Encodable;
-use bitcoin::hash_types::BlockHash;
-use bitcoin::network::constants::ServiceFlags;
-use bitcoin::network::message::{NetworkMessage, RawNetworkMessage};
-use bitcoin::network::message_blockdata::*;
-use bitcoin::network::message_filter::*;
-use bitcoin::network::message_network::VersionMessage;
-use bitcoin::network::stream_reader::StreamReader;
-use bitcoin::network::Address;
-use bitcoin::{Block, Network, Transaction, Txid, Wtxid};
+use dogecoin::consensus::Encodable;
+use dogecoin::hash_types::BlockHash;
+use dogecoin::network::constants::ServiceFlags;
+use dogecoin::network::message::{NetworkMessage, RawNetworkMessage};
+use dogecoin::network::message_blockdata::*;
+use dogecoin::network::message_filter::*;
+use dogecoin::network::message_network::VersionMessage;
+use dogecoin::network::stream_reader::StreamReader;
+use dogecoin::network::Address;
+use dogecoin::{Block, Network, Transaction, Txid, Wtxid};
 
 use super::CompactFiltersError;
 
@@ -128,7 +128,7 @@ impl Peer {
     /// Connect to a peer over a plaintext TCP connection
     ///
     /// This function internally spawns a new thread that will monitor incoming messages from the
-    /// peer, and optionally reply to some of them transparently, like [pings](bitcoin::network::message::NetworkMessage::Ping)
+    /// peer, and optionally reply to some of them transparently, like [pings](dogecoin::network::message::NetworkMessage::Ping)
     pub fn connect<A: ToSocketAddrs>(
         address: A,
         mempool: Arc<Mempool>,

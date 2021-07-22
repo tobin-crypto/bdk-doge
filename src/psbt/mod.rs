@@ -9,8 +9,8 @@
 // You may not use this file except in accordance with one or both of these
 // licenses.
 
-use bitcoin::util::psbt::PartiallySignedTransaction as Psbt;
-use bitcoin::TxOut;
+use dogecoin::util::psbt::PartiallySignedTransaction as Psbt;
+use dogecoin::TxOut;
 
 pub trait PsbtUtils {
     fn get_utxo_for(&self, input_index: usize) -> Option<TxOut>;
@@ -41,7 +41,7 @@ impl PsbtUtils for Psbt {
 
 #[cfg(test)]
 mod test {
-    use crate::bitcoin::TxIn;
+    use crate::dogecoin::TxIn;
     use crate::psbt::Psbt;
     use crate::wallet::test::{get_funded_wallet, get_test_wpkh};
     use crate::wallet::AddressIndex;

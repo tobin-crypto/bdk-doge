@@ -11,17 +11,17 @@
 
 use std::sync::Arc;
 
-use bdk::bitcoin;
-use bdk::database::MemoryDatabase;
-use bdk::descriptor::HdKeyPaths;
-use bdk::wallet::address_validator::{AddressValidator, AddressValidatorError};
-use bdk::KeychainKind;
-use bdk::Wallet;
+use bdk_doge::database::MemoryDatabase;
+use bdk_doge::descriptor::HdKeyPaths;
+use bdk_doge::dogecoin;
+use bdk_doge::wallet::address_validator::{AddressValidator, AddressValidatorError};
+use bdk_doge::KeychainKind;
+use bdk_doge::Wallet;
 
-use bdk::wallet::AddressIndex::New;
-use bitcoin::hashes::hex::FromHex;
-use bitcoin::util::bip32::Fingerprint;
-use bitcoin::{Network, Script};
+use bdk_doge::wallet::AddressIndex::New;
+use dogecoin::hashes::hex::FromHex;
+use dogecoin::util::bip32::Fingerprint;
+use dogecoin::{Network, Script};
 
 #[derive(Debug)]
 struct DummyValidator;
@@ -46,7 +46,7 @@ impl AddressValidator for DummyValidator {
     }
 }
 
-fn main() -> Result<(), bdk::Error> {
+fn main() -> Result<(), bdk_doge::Error> {
     let descriptor = "sh(and_v(v:pk(tpubDDpWvmUrPZrhSPmUzCMBHffvC3HyMAPnWDSAQNBTnj1iZeJa7BZQEttFiP4DS4GCcXQHezdXhn86Hj6LHX5EDstXPWrMaSneRWM8yUf6NFd/*),after(630000)))";
     let mut wallet =
         Wallet::new_offline(descriptor, None, Network::Regtest, MemoryDatabase::new())?;

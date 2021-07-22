@@ -14,10 +14,10 @@
 //! This module contains the definition of various common script templates that are ready to be
 //! used. See the documentation of each template for an example.
 
-use bitcoin::util::bip32;
-use bitcoin::Network;
+use dogecoin::util::bip32;
+use dogecoin::Network;
 
-use miniscript::{Legacy, Segwitv0};
+use miniscript_doge::{Legacy, Segwitv0};
 
 use super::{ExtendedDescriptor, IntoWalletDescriptor, KeyMap};
 use crate::descriptor::DescriptorError;
@@ -36,16 +36,16 @@ pub type DescriptorTemplateOut = (ExtendedDescriptor, KeyMap, ValidNetworks);
 /// ## Example
 ///
 /// ```
-/// use bdk::descriptor::error::Error as DescriptorError;
-/// use bdk::keys::{IntoDescriptorKey, KeyError};
-/// use bdk::miniscript::Legacy;
-/// use bdk::template::{DescriptorTemplate, DescriptorTemplateOut};
+/// use bdk_doge::descriptor::error::Error as DescriptorError;
+/// use bdk_doge::keys::{IntoDescriptorKey, KeyError};
+/// use bdk_doge::miniscript_doge::Legacy;
+/// use bdk_doge::template::{DescriptorTemplate, DescriptorTemplateOut};
 ///
 /// struct MyP2PKH<K: IntoDescriptorKey<Legacy>>(K);
 ///
 /// impl<K: IntoDescriptorKey<Legacy>> DescriptorTemplate for MyP2PKH<K> {
 ///     fn build(self) -> Result<DescriptorTemplateOut, DescriptorError> {
-///         Ok(bdk::descriptor!(pkh(self.0))?)
+///         Ok(bdk_doge::descriptor!(pkh(self.0))?)
 ///     }
 /// }
 /// ```
@@ -71,14 +71,14 @@ impl<T: DescriptorTemplate> IntoWalletDescriptor for T {
 /// ## Example
 ///
 /// ```
-/// # use bdk::bitcoin::{PrivateKey, Network};
-/// # use bdk::{Wallet};
-/// # use bdk::database::MemoryDatabase;
-/// # use bdk::wallet::AddressIndex::New;
-/// use bdk::template::P2Pkh;
+/// # use bdk_doge::dogecoin::{PrivateKey, Network};
+/// # use bdk_doge::{Wallet};
+/// # use bdk_doge::database::MemoryDatabase;
+/// # use bdk_doge::wallet::AddressIndex::New;
+/// use bdk_doge::template::P2Pkh;
 ///
 /// let key =
-///     bitcoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")?;
+///     dogecoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")?;
 /// let wallet = Wallet::new_offline(
 ///     P2Pkh(key),
 ///     None,
@@ -105,14 +105,14 @@ impl<K: IntoDescriptorKey<Legacy>> DescriptorTemplate for P2Pkh<K> {
 /// ## Example
 ///
 /// ```
-/// # use bdk::bitcoin::{PrivateKey, Network};
-/// # use bdk::{Wallet};
-/// # use bdk::database::MemoryDatabase;
-/// # use bdk::wallet::AddressIndex::New;
-/// use bdk::template::P2Wpkh_P2Sh;
+/// # use bdk_doge::dogecoin::{PrivateKey, Network};
+/// # use bdk_doge::{Wallet};
+/// # use bdk_doge::database::MemoryDatabase;
+/// # use bdk_doge::wallet::AddressIndex::New;
+/// use bdk_doge::template::P2Wpkh_P2Sh;
 ///
 /// let key =
-///     bitcoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")?;
+///     dogecoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")?;
 /// let wallet = Wallet::new_offline(
 ///     P2Wpkh_P2Sh(key),
 ///     None,
@@ -140,14 +140,14 @@ impl<K: IntoDescriptorKey<Segwitv0>> DescriptorTemplate for P2Wpkh_P2Sh<K> {
 /// ## Example
 ///
 /// ```
-/// # use bdk::bitcoin::{PrivateKey, Network};
-/// # use bdk::{Wallet};
-/// # use bdk::database::MemoryDatabase;
-/// # use bdk::wallet::AddressIndex::New;
-/// use bdk::template::P2Wpkh;
+/// # use bdk_doge::dogecoin::{PrivateKey, Network};
+/// # use bdk_doge::{Wallet};
+/// # use bdk_doge::database::MemoryDatabase;
+/// # use bdk_doge::wallet::AddressIndex::New;
+/// use bdk_doge::template::P2Wpkh;
 ///
 /// let key =
-///     bitcoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")?;
+///     dogecoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")?;
 /// let wallet = Wallet::new_offline(
 ///     P2Wpkh(key),
 ///     None,
@@ -179,13 +179,13 @@ impl<K: IntoDescriptorKey<Segwitv0>> DescriptorTemplate for P2Wpkh<K> {
 ///
 /// ```
 /// # use std::str::FromStr;
-/// # use bdk::bitcoin::{PrivateKey, Network};
-/// # use bdk::{Wallet,  KeychainKind};
-/// # use bdk::database::MemoryDatabase;
-/// # use bdk::wallet::AddressIndex::New;
-/// use bdk::template::Bip44;
+/// # use bdk_doge::dogecoin::{PrivateKey, Network};
+/// # use bdk_doge::{Wallet,  KeychainKind};
+/// # use bdk_doge::database::MemoryDatabase;
+/// # use bdk_doge::wallet::AddressIndex::New;
+/// use bdk_doge::template::Bip44;
 ///
-/// let key = bitcoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPeZRHk4rTG6orPS2CRNFX3njhUXx5vj9qGog5ZMH4uGReDWN5kCkY3jmWEtWause41CDvBRXD1shKknAMKxT99o9qUTRVC6m")?;
+/// let key = dogecoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPeZRHk4rTG6orPS2CRNFX3njhUXx5vj9qGog5ZMH4uGReDWN5kCkY3jmWEtWause41CDvBRXD1shKknAMKxT99o9qUTRVC6m")?;
 /// let wallet = Wallet::new_offline(
 ///     Bip44(key.clone(), KeychainKind::External),
 ///     Some(Bip44(key, KeychainKind::Internal)),
@@ -218,14 +218,14 @@ impl<K: DerivableKey<Legacy>> DescriptorTemplate for Bip44<K> {
 ///
 /// ```
 /// # use std::str::FromStr;
-/// # use bdk::bitcoin::{PrivateKey, Network};
-/// # use bdk::{Wallet,  KeychainKind};
-/// # use bdk::database::MemoryDatabase;
-/// # use bdk::wallet::AddressIndex::New;
-/// use bdk::template::Bip44Public;
+/// # use bdk_doge::dogecoin::{PrivateKey, Network};
+/// # use bdk_doge::{Wallet,  KeychainKind};
+/// # use bdk_doge::database::MemoryDatabase;
+/// # use bdk_doge::wallet::AddressIndex::New;
+/// use bdk_doge::template::Bip44Public;
 ///
-/// let key = bitcoin::util::bip32::ExtendedPubKey::from_str("tpubDDDzQ31JkZB7VxUr9bjvBivDdqoFLrDPyLWtLapArAi51ftfmCb2DPxwLQzX65iNcXz1DGaVvyvo6JQ6rTU73r2gqdEo8uov9QKRb7nKCSU")?;
-/// let fingerprint = bitcoin::util::bip32::Fingerprint::from_str("c55b303f")?;
+/// let key = dogecoin::util::bip32::ExtendedPubKey::from_str("tpubDDDzQ31JkZB7VxUr9bjvBivDdqoFLrDPyLWtLapArAi51ftfmCb2DPxwLQzX65iNcXz1DGaVvyvo6JQ6rTU73r2gqdEo8uov9QKRb7nKCSU")?;
+/// let fingerprint = dogecoin::util::bip32::Fingerprint::from_str("c55b303f")?;
 /// let wallet = Wallet::new_offline(
 ///     Bip44Public(key.clone(), fingerprint, KeychainKind::External),
 ///     Some(Bip44Public(key, fingerprint, KeychainKind::Internal)),
@@ -255,13 +255,13 @@ impl<K: DerivableKey<Legacy>> DescriptorTemplate for Bip44Public<K> {
 ///
 /// ```
 /// # use std::str::FromStr;
-/// # use bdk::bitcoin::{PrivateKey, Network};
-/// # use bdk::{Wallet,  KeychainKind};
-/// # use bdk::database::MemoryDatabase;
-/// # use bdk::wallet::AddressIndex::New;
-/// use bdk::template::Bip49;
+/// # use bdk_doge::dogecoin::{PrivateKey, Network};
+/// # use bdk_doge::{Wallet,  KeychainKind};
+/// # use bdk_doge::database::MemoryDatabase;
+/// # use bdk_doge::wallet::AddressIndex::New;
+/// use bdk_doge::template::Bip49;
 ///
-/// let key = bitcoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPeZRHk4rTG6orPS2CRNFX3njhUXx5vj9qGog5ZMH4uGReDWN5kCkY3jmWEtWause41CDvBRXD1shKknAMKxT99o9qUTRVC6m")?;
+/// let key = dogecoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPeZRHk4rTG6orPS2CRNFX3njhUXx5vj9qGog5ZMH4uGReDWN5kCkY3jmWEtWause41CDvBRXD1shKknAMKxT99o9qUTRVC6m")?;
 /// let wallet = Wallet::new_offline(
 ///     Bip49(key.clone(), KeychainKind::External),
 ///     Some(Bip49(key, KeychainKind::Internal)),
@@ -294,14 +294,14 @@ impl<K: DerivableKey<Segwitv0>> DescriptorTemplate for Bip49<K> {
 ///
 /// ```
 /// # use std::str::FromStr;
-/// # use bdk::bitcoin::{PrivateKey, Network};
-/// # use bdk::{Wallet,  KeychainKind};
-/// # use bdk::database::MemoryDatabase;
-/// # use bdk::wallet::AddressIndex::New;
-/// use bdk::template::Bip49Public;
+/// # use bdk_doge::dogecoin::{PrivateKey, Network};
+/// # use bdk_doge::{Wallet,  KeychainKind};
+/// # use bdk_doge::database::MemoryDatabase;
+/// # use bdk_doge::wallet::AddressIndex::New;
+/// use bdk_doge::template::Bip49Public;
 ///
-/// let key = bitcoin::util::bip32::ExtendedPubKey::from_str("tpubDC49r947KGK52X5rBWS4BLs5m9SRY3pYHnvRrm7HcybZ3BfdEsGFyzCMzayi1u58eT82ZeyFZwH7DD6Q83E3fM9CpfMtmnTygnLfP59jL9L")?;
-/// let fingerprint = bitcoin::util::bip32::Fingerprint::from_str("c55b303f")?;
+/// let key = dogecoin::util::bip32::ExtendedPubKey::from_str("tpubDC49r947KGK52X5rBWS4BLs5m9SRY3pYHnvRrm7HcybZ3BfdEsGFyzCMzayi1u58eT82ZeyFZwH7DD6Q83E3fM9CpfMtmnTygnLfP59jL9L")?;
+/// let fingerprint = dogecoin::util::bip32::Fingerprint::from_str("c55b303f")?;
 /// let wallet = Wallet::new_offline(
 ///     Bip49Public(key.clone(), fingerprint, KeychainKind::External),
 ///     Some(Bip49Public(key, fingerprint, KeychainKind::Internal)),
@@ -331,13 +331,13 @@ impl<K: DerivableKey<Segwitv0>> DescriptorTemplate for Bip49Public<K> {
 ///
 /// ```
 /// # use std::str::FromStr;
-/// # use bdk::bitcoin::{PrivateKey, Network};
-/// # use bdk::{Wallet,  KeychainKind};
-/// # use bdk::database::MemoryDatabase;
-/// # use bdk::wallet::AddressIndex::New;
-/// use bdk::template::Bip84;
+/// # use bdk_doge::dogecoin::{PrivateKey, Network};
+/// # use bdk_doge::{Wallet,  KeychainKind};
+/// # use bdk_doge::database::MemoryDatabase;
+/// # use bdk_doge::wallet::AddressIndex::New;
+/// use bdk_doge::template::Bip84;
 ///
-/// let key = bitcoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPeZRHk4rTG6orPS2CRNFX3njhUXx5vj9qGog5ZMH4uGReDWN5kCkY3jmWEtWause41CDvBRXD1shKknAMKxT99o9qUTRVC6m")?;
+/// let key = dogecoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPeZRHk4rTG6orPS2CRNFX3njhUXx5vj9qGog5ZMH4uGReDWN5kCkY3jmWEtWause41CDvBRXD1shKknAMKxT99o9qUTRVC6m")?;
 /// let wallet = Wallet::new_offline(
 ///     Bip84(key.clone(), KeychainKind::External),
 ///     Some(Bip84(key, KeychainKind::Internal)),
@@ -370,14 +370,14 @@ impl<K: DerivableKey<Segwitv0>> DescriptorTemplate for Bip84<K> {
 ///
 /// ```
 /// # use std::str::FromStr;
-/// # use bdk::bitcoin::{PrivateKey, Network};
-/// # use bdk::{Wallet,  KeychainKind};
-/// # use bdk::database::MemoryDatabase;
-/// # use bdk::wallet::AddressIndex::New;
-/// use bdk::template::Bip84Public;
+/// # use bdk_doge::dogecoin::{PrivateKey, Network};
+/// # use bdk_doge::{Wallet,  KeychainKind};
+/// # use bdk_doge::database::MemoryDatabase;
+/// # use bdk_doge::wallet::AddressIndex::New;
+/// use bdk_doge::template::Bip84Public;
 ///
-/// let key = bitcoin::util::bip32::ExtendedPubKey::from_str("tpubDC2Qwo2TFsaNC4ju8nrUJ9mqVT3eSgdmy1yPqhgkjwmke3PRXutNGRYAUo6RCHTcVQaDR3ohNU9we59brGHuEKPvH1ags2nevW5opEE9Z5Q")?;
-/// let fingerprint = bitcoin::util::bip32::Fingerprint::from_str("c55b303f")?;
+/// let key = dogecoin::util::bip32::ExtendedPubKey::from_str("tpubDC2Qwo2TFsaNC4ju8nrUJ9mqVT3eSgdmy1yPqhgkjwmke3PRXutNGRYAUo6RCHTcVQaDR3ohNU9we59brGHuEKPvH1ags2nevW5opEE9Z5Q")?;
+/// let fingerprint = dogecoin::util::bip32::Fingerprint::from_str("c55b303f")?;
 /// let wallet = Wallet::new_offline(
 ///     Bip84Public(key.clone(), fingerprint, KeychainKind::External),
 ///     Some(Bip84Public(key, fingerprint, KeychainKind::Internal)),
@@ -461,10 +461,10 @@ mod test {
     use crate::descriptor::derived::AsDerived;
     use crate::descriptor::{DescriptorError, DescriptorMeta};
     use crate::keys::ValidNetworks;
-    use bitcoin::network::constants::Network::Regtest;
-    use bitcoin::secp256k1::Secp256k1;
-    use miniscript::descriptor::{DescriptorPublicKey, DescriptorTrait, KeyMap};
-    use miniscript::Descriptor;
+    use dogecoin::network::constants::Network::Regtest;
+    use dogecoin::secp256k1::Secp256k1;
+    use miniscript_doge::descriptor::{DescriptorPublicKey, DescriptorTrait, KeyMap};
+    use miniscript_doge::Descriptor;
 
     // verify template descriptor generates expected address(es)
     fn check(
@@ -494,7 +494,7 @@ mod test {
     #[test]
     fn test_p2ph_template() {
         let prvkey =
-            bitcoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")
+            dogecoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")
                 .unwrap();
         check(
             P2Pkh(prvkey).build(),
@@ -503,7 +503,7 @@ mod test {
             &["mwJ8hxFYW19JLuc65RCTaP4v1rzVU8cVMT"],
         );
 
-        let pubkey = bitcoin::PublicKey::from_str(
+        let pubkey = dogecoin::PublicKey::from_str(
             "03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd",
         )
         .unwrap();
@@ -519,7 +519,7 @@ mod test {
     #[test]
     fn test_p2wphp2sh_template() {
         let prvkey =
-            bitcoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")
+            dogecoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")
                 .unwrap();
         check(
             P2Wpkh_P2Sh(prvkey).build(),
@@ -528,7 +528,7 @@ mod test {
             &["2NB4ox5VDRw1ecUv6SnT3VQHPXveYztRqk5"],
         );
 
-        let pubkey = bitcoin::PublicKey::from_str(
+        let pubkey = dogecoin::PublicKey::from_str(
             "03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd",
         )
         .unwrap();
@@ -544,7 +544,7 @@ mod test {
     #[test]
     fn test_p2wph_template() {
         let prvkey =
-            bitcoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")
+            dogecoin::PrivateKey::from_wif("cTc4vURSzdx6QE6KVynWGomDbLaA75dNALMNyfjh3p8DRRar84Um")
                 .unwrap();
         check(
             P2Wpkh(prvkey).build(),
@@ -553,7 +553,7 @@ mod test {
             &["bcrt1q4525hmgw265tl3drrl8jjta7ayffu6jfcwxx9y"],
         );
 
-        let pubkey = bitcoin::PublicKey::from_str(
+        let pubkey = dogecoin::PublicKey::from_str(
             "03a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd",
         )
         .unwrap();
@@ -568,7 +568,7 @@ mod test {
     // BIP44 `pkh(key/44'/0'/0'/{0,1}/*)`
     #[test]
     fn test_bip44_template() {
-        let prvkey = bitcoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPcx5nBGsR63Pe8KnRUqmbJNENAfGftF3yuXoMMoVJJcYeUw5eVkm9WBPjWYt6HMWYJNesB5HaNVBaFc1M6dRjWSYnmewUMYy").unwrap();
+        let prvkey = dogecoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPcx5nBGsR63Pe8KnRUqmbJNENAfGftF3yuXoMMoVJJcYeUw5eVkm9WBPjWYt6HMWYJNesB5HaNVBaFc1M6dRjWSYnmewUMYy").unwrap();
         check(
             Bip44(prvkey, KeychainKind::External).build(),
             false,
@@ -594,8 +594,8 @@ mod test {
     // BIP44 public `pkh(key/{0,1}/*)`
     #[test]
     fn test_bip44_public_template() {
-        let pubkey = bitcoin::util::bip32::ExtendedPubKey::from_str("tpubDDDzQ31JkZB7VxUr9bjvBivDdqoFLrDPyLWtLapArAi51ftfmCb2DPxwLQzX65iNcXz1DGaVvyvo6JQ6rTU73r2gqdEo8uov9QKRb7nKCSU").unwrap();
-        let fingerprint = bitcoin::util::bip32::Fingerprint::from_str("c55b303f").unwrap();
+        let pubkey = dogecoin::util::bip32::ExtendedPubKey::from_str("tpubDDDzQ31JkZB7VxUr9bjvBivDdqoFLrDPyLWtLapArAi51ftfmCb2DPxwLQzX65iNcXz1DGaVvyvo6JQ6rTU73r2gqdEo8uov9QKRb7nKCSU").unwrap();
+        let fingerprint = dogecoin::util::bip32::Fingerprint::from_str("c55b303f").unwrap();
         check(
             Bip44Public(pubkey, fingerprint, KeychainKind::External).build(),
             false,
@@ -621,7 +621,7 @@ mod test {
     // BIP49 `sh(wpkh(key/49'/0'/0'/{0,1}/*))`
     #[test]
     fn test_bip49_template() {
-        let prvkey = bitcoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPcx5nBGsR63Pe8KnRUqmbJNENAfGftF3yuXoMMoVJJcYeUw5eVkm9WBPjWYt6HMWYJNesB5HaNVBaFc1M6dRjWSYnmewUMYy").unwrap();
+        let prvkey = dogecoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPcx5nBGsR63Pe8KnRUqmbJNENAfGftF3yuXoMMoVJJcYeUw5eVkm9WBPjWYt6HMWYJNesB5HaNVBaFc1M6dRjWSYnmewUMYy").unwrap();
         check(
             Bip49(prvkey, KeychainKind::External).build(),
             true,
@@ -647,8 +647,8 @@ mod test {
     // BIP49 public `sh(wpkh(key/{0,1}/*))`
     #[test]
     fn test_bip49_public_template() {
-        let pubkey = bitcoin::util::bip32::ExtendedPubKey::from_str("tpubDC49r947KGK52X5rBWS4BLs5m9SRY3pYHnvRrm7HcybZ3BfdEsGFyzCMzayi1u58eT82ZeyFZwH7DD6Q83E3fM9CpfMtmnTygnLfP59jL9L").unwrap();
-        let fingerprint = bitcoin::util::bip32::Fingerprint::from_str("c55b303f").unwrap();
+        let pubkey = dogecoin::util::bip32::ExtendedPubKey::from_str("tpubDC49r947KGK52X5rBWS4BLs5m9SRY3pYHnvRrm7HcybZ3BfdEsGFyzCMzayi1u58eT82ZeyFZwH7DD6Q83E3fM9CpfMtmnTygnLfP59jL9L").unwrap();
+        let fingerprint = dogecoin::util::bip32::Fingerprint::from_str("c55b303f").unwrap();
         check(
             Bip49Public(pubkey, fingerprint, KeychainKind::External).build(),
             true,
@@ -674,7 +674,7 @@ mod test {
     // BIP84 `wpkh(key/84'/0'/0'/{0,1}/*)`
     #[test]
     fn test_bip84_template() {
-        let prvkey = bitcoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPcx5nBGsR63Pe8KnRUqmbJNENAfGftF3yuXoMMoVJJcYeUw5eVkm9WBPjWYt6HMWYJNesB5HaNVBaFc1M6dRjWSYnmewUMYy").unwrap();
+        let prvkey = dogecoin::util::bip32::ExtendedPrivKey::from_str("tprv8ZgxMBicQKsPcx5nBGsR63Pe8KnRUqmbJNENAfGftF3yuXoMMoVJJcYeUw5eVkm9WBPjWYt6HMWYJNesB5HaNVBaFc1M6dRjWSYnmewUMYy").unwrap();
         check(
             Bip84(prvkey, KeychainKind::External).build(),
             true,
@@ -700,8 +700,8 @@ mod test {
     // BIP84 public `wpkh(key/{0,1}/*)`
     #[test]
     fn test_bip84_public_template() {
-        let pubkey = bitcoin::util::bip32::ExtendedPubKey::from_str("tpubDC2Qwo2TFsaNC4ju8nrUJ9mqVT3eSgdmy1yPqhgkjwmke3PRXutNGRYAUo6RCHTcVQaDR3ohNU9we59brGHuEKPvH1ags2nevW5opEE9Z5Q").unwrap();
-        let fingerprint = bitcoin::util::bip32::Fingerprint::from_str("c55b303f").unwrap();
+        let pubkey = dogecoin::util::bip32::ExtendedPubKey::from_str("tpubDC2Qwo2TFsaNC4ju8nrUJ9mqVT3eSgdmy1yPqhgkjwmke3PRXutNGRYAUo6RCHTcVQaDR3ohNU9we59brGHuEKPvH1ags2nevW5opEE9Z5Q").unwrap();
+        let fingerprint = dogecoin::util::bip32::Fingerprint::from_str("c55b303f").unwrap();
         check(
             Bip84Public(pubkey, fingerprint, KeychainKind::External).build(),
             true,

@@ -30,9 +30,9 @@
 //!
 //! ```no_run
 //! # use std::sync::Arc;
-//! # use bitcoin::*;
-//! # use bdk::*;
-//! # use bdk::blockchain::compact_filters::*;
+//! # use dogecoin::*;
+//! # use bdk_doge::*;
+//! # use bdk_doge::blockchain::compact_filters::*;
 //! let num_threads = 4;
 //!
 //! let mempool = Arc::new(Mempool::default());
@@ -58,8 +58,8 @@ use std::sync::{Arc, Mutex};
 #[allow(unused_imports)]
 use log::{debug, error, info, trace};
 
-use bitcoin::network::message_blockdata::Inventory;
-use bitcoin::{Network, OutPoint, Transaction, Txid};
+use dogecoin::network::message_blockdata::Inventory;
+use dogecoin::{Network, OutPoint, Transaction, Txid};
 
 use rocksdb::{Options, SliceTransform, DB};
 
@@ -529,7 +529,7 @@ pub enum CompactFiltersError {
     NotConnected,
     /// A peer took too long to reply to one of our messages
     Timeout,
-    /// The peer doesn't advertise the [`BLOOM`](bitcoin::network::constants::ServiceFlags::BLOOM) service flag
+    /// The peer doesn't advertise the [`BLOOM`](dogecoin::network::constants::ServiceFlags::BLOOM) service flag
     PeerBloomDisabled,
 
     /// No peers have been specified
@@ -540,7 +540,7 @@ pub enum CompactFiltersError {
     /// Internal I/O error
     Io(std::io::Error),
     /// Invalid BIP158 filter
-    Bip158(bitcoin::util::bip158::Error),
+    Bip158(dogecoin::util::bip158::Error),
     /// Internal system time error
     Time(std::time::SystemTimeError),
 
@@ -558,7 +558,7 @@ impl std::error::Error for CompactFiltersError {}
 
 impl_error!(rocksdb::Error, Db, CompactFiltersError);
 impl_error!(std::io::Error, Io, CompactFiltersError);
-impl_error!(bitcoin::util::bip158::Error, Bip158, CompactFiltersError);
+impl_error!(dogecoin::util::bip158::Error, Bip158, CompactFiltersError);
 impl_error!(std::time::SystemTimeError, Time, CompactFiltersError);
 
 impl From<crate::error::Error> for CompactFiltersError {

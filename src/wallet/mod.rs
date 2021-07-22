@@ -20,17 +20,17 @@ use std::fmt;
 use std::ops::{Deref, DerefMut};
 use std::sync::Arc;
 
-use bitcoin::secp256k1::Secp256k1;
+use dogecoin::secp256k1::Secp256k1;
 
-use bitcoin::consensus::encode::serialize;
-use bitcoin::util::base58;
-use bitcoin::util::psbt::raw::Key as PsbtKey;
-use bitcoin::util::psbt::Input;
-use bitcoin::util::psbt::PartiallySignedTransaction as Psbt;
-use bitcoin::{Address, Network, OutPoint, Script, SigHashType, Transaction, TxOut, Txid};
+use dogecoin::consensus::encode::serialize;
+use dogecoin::util::base58;
+use dogecoin::util::psbt::raw::Key as PsbtKey;
+use dogecoin::util::psbt::Input;
+use dogecoin::util::psbt::PartiallySignedTransaction as Psbt;
+use dogecoin::{Address, Network, OutPoint, Script, SigHashType, Transaction, TxOut, Txid};
 
-use miniscript::descriptor::DescriptorTrait;
-use miniscript::psbt::PsbtInputSatisfier;
+use miniscript_doge::descriptor::DescriptorTrait;
+use miniscript_doge::psbt::PsbtInputSatisfier;
 
 #[allow(unused_imports)]
 use log::{debug, error, info, trace};
@@ -381,9 +381,9 @@ where
     ///
     /// ```
     /// # use std::str::FromStr;
-    /// # use bitcoin::*;
-    /// # use bdk::*;
-    /// # use bdk::database::*;
+    /// # use dogecoin::*;
+    /// # use bdk_doge::*;
+    /// # use bdk_doge::database::*;
     /// # let descriptor = "wpkh(tpubD6NzVbkrYhZ4Xferm7Pz4VnjdcDPFyjVu5K4iZXQ4pVN8Cks4pHVowTBXBKRhX64pkRyJZJN5xAKj4UDNnLPb5p2sSKXhewoYx5GbTdUFWq/*)";
     /// # let wallet = doctest_wallet!();
     /// # let to_address = Address::from_str("2N4eQYCbKUHCCTUjBJeHcJp9ok6J2GZsTDt").unwrap();
@@ -395,7 +395,7 @@ where
     /// };
     ///
     /// // sign and broadcast ...
-    /// # Ok::<(), bdk::Error>(())
+    /// # Ok::<(), bdk_doge::Error>(())
     /// ```
     ///
     /// [`TxBuilder`]: crate::TxBuilder
@@ -628,7 +628,7 @@ where
         tx.input = coin_selection
             .selected
             .iter()
-            .map(|u| bitcoin::TxIn {
+            .map(|u| dogecoin::TxIn {
                 previous_output: u.outpoint(),
                 script_sig: Script::default(),
                 sequence: n_sequence,
@@ -708,9 +708,9 @@ where
     /// ```no_run
     /// # // TODO: remove norun -- bumping fee seems to need the tx in the wallet database first.
     /// # use std::str::FromStr;
-    /// # use bitcoin::*;
-    /// # use bdk::*;
-    /// # use bdk::database::*;
+    /// # use dogecoin::*;
+    /// # use bdk_doge::*;
+    /// # use bdk_doge::database::*;
     /// # let descriptor = "wpkh(tpubD6NzVbkrYhZ4Xferm7Pz4VnjdcDPFyjVu5K4iZXQ4pVN8Cks4pHVowTBXBKRhX64pkRyJZJN5xAKj4UDNnLPb5p2sSKXhewoYx5GbTdUFWq/*)";
     /// # let wallet = doctest_wallet!();
     /// # let to_address = Address::from_str("2N4eQYCbKUHCCTUjBJeHcJp9ok6J2GZsTDt").unwrap();
@@ -734,7 +734,7 @@ where
     /// let _ = wallet.sign(&mut psbt, SignOptions::default())?;
     /// let fee_bumped_tx = psbt.extract_tx();
     /// // broadcast fee_bumped_tx to replace original
-    /// # Ok::<(), bdk::Error>(())
+    /// # Ok::<(), bdk_doge::Error>(())
     /// ```
     // TODO: support for merging multiple transactions while bumping the fees
     // TODO: option to force addition of an extra output? seems bad for privacy to update the
@@ -857,9 +857,9 @@ where
     ///
     /// ```
     /// # use std::str::FromStr;
-    /// # use bitcoin::*;
-    /// # use bdk::*;
-    /// # use bdk::database::*;
+    /// # use dogecoin::*;
+    /// # use bdk_doge::*;
+    /// # use bdk_doge::database::*;
     /// # let descriptor = "wpkh(tpubD6NzVbkrYhZ4Xferm7Pz4VnjdcDPFyjVu5K4iZXQ4pVN8Cks4pHVowTBXBKRhX64pkRyJZJN5xAKj4UDNnLPb5p2sSKXhewoYx5GbTdUFWq/*)";
     /// # let wallet = doctest_wallet!();
     /// # let to_address = Address::from_str("2N4eQYCbKUHCCTUjBJeHcJp9ok6J2GZsTDt").unwrap();
@@ -870,7 +870,7 @@ where
     /// };
     /// let  finalized = wallet.sign(&mut psbt, SignOptions::default())?;
     /// assert!(finalized, "we should have signed all the inputs");
-    /// # Ok::<(), bdk::Error>(())
+    /// # Ok::<(), bdk_doge::Error>(())
     pub fn sign(&self, psbt: &mut Psbt, sign_options: SignOptions) -> Result<bool, Error> {
         // this helps us doing our job later
         self.add_input_hd_keypaths(psbt)?;
@@ -1004,7 +1004,7 @@ where
 
             match desc {
                 Some(desc) => {
-                    let mut tmp_input = bitcoin::TxIn::default();
+                    let mut tmp_input = dogecoin::TxIn::default();
                     match desc.satisfy(
                         &mut tmp_input,
                         (
@@ -1254,7 +1254,7 @@ where
         selected: Vec<Utxo>,
         params: TxParams,
     ) -> Result<Psbt, Error> {
-        use bitcoin::util::psbt::serialize::Serialize;
+        use dogecoin::util::psbt::serialize::Serialize;
 
         let mut psbt = Psbt::from_unsigned_tx(tx)?;
 
@@ -1564,7 +1564,7 @@ impl Vbytes for usize {
 pub(crate) mod test {
     use std::str::FromStr;
 
-    use bitcoin::{util::psbt, Network};
+    use dogecoin::{util::psbt, Network};
 
     use crate::database::memory::MemoryDatabase;
     use crate::database::Database;
@@ -1689,7 +1689,7 @@ pub(crate) mod test {
     ) -> (
         Wallet<(), MemoryDatabase>,
         (String, Option<String>),
-        bitcoin::Txid,
+        dogecoin::Txid,
     ) {
         let descriptors = testutils!(@descriptors (descriptor));
         let wallet = Wallet::new_offline(
@@ -1710,7 +1710,7 @@ pub(crate) mod test {
             .database
             .borrow_mut()
             .set_script_pubkey(
-                &bitcoin::Address::from_str(&tx_meta.output.get(0).unwrap().to_address)
+                &dogecoin::Address::from_str(&tx_meta.output.get(0).unwrap().to_address)
                     .unwrap()
                     .script_pubkey(),
                 KeychainKind::External,
@@ -2179,18 +2179,18 @@ pub(crate) mod test {
         let mut builder = wallet.build_tx();
         builder
             .add_recipient(addr.script_pubkey(), 30_000)
-            .sighash(bitcoin::SigHashType::Single);
+            .sighash(dogecoin::SigHashType::Single);
         let (psbt, _) = builder.finish().unwrap();
 
         assert_eq!(
             psbt.inputs[0].sighash_type,
-            Some(bitcoin::SigHashType::Single)
+            Some(dogecoin::SigHashType::Single)
         );
     }
 
     #[test]
     fn test_create_tx_input_hd_keypaths() {
-        use bitcoin::util::bip32::{DerivationPath, Fingerprint};
+        use dogecoin::util::bip32::{DerivationPath, Fingerprint};
         use std::str::FromStr;
 
         let (wallet, _, _) = get_funded_wallet("wpkh([d34db33f/44'/0'/0']tpubDEnoLuPdBep9bzw5LoGYpsxUQYheRQ9gcgrJhJEcdKFB9cWQRyYmkCyRoTqeD4tJYiVVgt6A3rN6rWn9RYhR9sBsGxji29LYWHuKKbdb1ev/0/*)");
@@ -2211,7 +2211,7 @@ pub(crate) mod test {
 
     #[test]
     fn test_create_tx_output_hd_keypaths() {
-        use bitcoin::util::bip32::{DerivationPath, Fingerprint};
+        use dogecoin::util::bip32::{DerivationPath, Fingerprint};
         use std::str::FromStr;
 
         let (wallet, descriptors, _) = get_funded_wallet("wpkh([d34db33f/44'/0'/0']tpubDEnoLuPdBep9bzw5LoGYpsxUQYheRQ9gcgrJhJEcdKFB9cWQRyYmkCyRoTqeD4tJYiVVgt6A3rN6rWn9RYhR9sBsGxji29LYWHuKKbdb1ev/0/*)");
@@ -2235,7 +2235,7 @@ pub(crate) mod test {
 
     #[test]
     fn test_create_tx_set_redeem_script_p2sh() {
-        use bitcoin::hashes::hex::FromHex;
+        use dogecoin::hashes::hex::FromHex;
 
         let (wallet, _, _) =
             get_funded_wallet("sh(pk(cVpPVruEDdmutPzisEsYvtST1usBR3ntr8pXSyt6D2YYqXRyPcFW))");
@@ -2258,7 +2258,7 @@ pub(crate) mod test {
 
     #[test]
     fn test_create_tx_set_witness_script_p2wsh() {
-        use bitcoin::hashes::hex::FromHex;
+        use dogecoin::hashes::hex::FromHex;
 
         let (wallet, _, _) =
             get_funded_wallet("wsh(pk(cVpPVruEDdmutPzisEsYvtST1usBR3ntr8pXSyt6D2YYqXRyPcFW))");
@@ -2281,7 +2281,7 @@ pub(crate) mod test {
 
     #[test]
     fn test_create_tx_set_redeem_witness_script_p2wsh_p2sh() {
-        use bitcoin::hashes::hex::FromHex;
+        use dogecoin::hashes::hex::FromHex;
 
         let (wallet, _, _) =
             get_funded_wallet("sh(wsh(pk(cVpPVruEDdmutPzisEsYvtST1usBR3ntr8pXSyt6D2YYqXRyPcFW)))");
@@ -2457,9 +2457,9 @@ pub(crate) mod test {
 
     #[test]
     fn test_create_tx_global_xpubs_with_origin() {
-        use bitcoin::hashes::hex::FromHex;
-        use bitcoin::util::base58;
-        use bitcoin::util::psbt::raw::Key;
+        use dogecoin::hashes::hex::FromHex;
+        use dogecoin::util::base58;
+        use dogecoin::util::psbt::raw::Key;
 
         let (wallet, _, _) = get_funded_wallet("wpkh([73756c7f/48'/0'/0'/2']tpubDCKxNyM3bLgbEX13Mcd8mYxbVg9ajDkWXMh29hMWBurKfVmBfWAM96QVP3zaUcN51HvkZ3ar4VwP82kC8JZhhux8vFQoJintSpVBwpFvyU3/0/*)");
         let addr = wallet.get_address(New).unwrap();
@@ -2719,9 +2719,9 @@ pub(crate) mod test {
 
     #[test]
     fn test_create_tx_global_xpubs_master_without_origin() {
-        use bitcoin::hashes::hex::FromHex;
-        use bitcoin::util::base58;
-        use bitcoin::util::psbt::raw::Key;
+        use dogecoin::hashes::hex::FromHex;
+        use dogecoin::util::base58;
+        use dogecoin::util::psbt::raw::Key;
 
         let (wallet, _, _) = get_funded_wallet("wpkh(tpubD6NzVbkrYhZ4Y55A58Gv9RSNF5hy84b5AJqYy7sCcjFrkcLpPre8kmgfit6kY1Zs3BLgeypTDBZJM222guPpdz7Cup5yzaMu62u7mYGbwFL/0/*)");
         let addr = wallet.get_address(New).unwrap();
@@ -3698,10 +3698,10 @@ pub(crate) mod test {
         let (mut psbt, _) = builder.finish().unwrap();
 
         // add another input to the psbt that is at least passable.
-        let dud_input = bitcoin::util::psbt::Input {
+        let dud_input = dogecoin::util::psbt::Input {
             witness_utxo: Some(TxOut {
                 value: 100_000,
-                script_pubkey: miniscript::Descriptor::<bitcoin::PublicKey>::from_str(
+                script_pubkey: miniscript_doge::Descriptor::<dogecoin::PublicKey>::from_str(
                     "wpkh(025476c2e83188368da1ff3e292e7acafcdb3566bb0ad253f62fc70f07aeee6357)",
                 )
                 .unwrap()
@@ -3711,7 +3711,7 @@ pub(crate) mod test {
         };
 
         psbt.inputs.push(dud_input);
-        psbt.global.unsigned_tx.input.push(bitcoin::TxIn::default());
+        psbt.global.unsigned_tx.input.push(dogecoin::TxIn::default());
         let is_final = wallet
             .sign(
                 &mut psbt,

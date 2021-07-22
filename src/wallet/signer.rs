@@ -17,12 +17,12 @@
 //! ```
 //! # use std::sync::Arc;
 //! # use std::str::FromStr;
-//! # use bitcoin::secp256k1::{Secp256k1, All};
-//! # use bitcoin::*;
-//! # use bitcoin::util::psbt;
-//! # use bdk::signer::*;
-//! # use bdk::database::*;
-//! # use bdk::*;
+//! # use dogecoin::secp256k1::{Secp256k1, All};
+//! # use dogecoin::*;
+//! # use dogecoin::util::psbt;
+//! # use bdk_doge::signer::*;
+//! # use bdk_doge::database::*;
+//! # use bdk_doge::*;
 //! # #[derive(Debug)]
 //! # struct CustomHSM;
 //! # impl CustomHSM {
@@ -79,7 +79,7 @@
 //!     Arc::new(custom_signer)
 //! );
 //!
-//! # Ok::<_, bdk::Error>(())
+//! # Ok::<_, bdk_doge::Error>(())
 //! ```
 
 use std::cmp::Ordering;
@@ -88,16 +88,16 @@ use std::fmt;
 use std::ops::Bound::Included;
 use std::sync::Arc;
 
-use bitcoin::blockdata::opcodes;
-use bitcoin::blockdata::script::Builder as ScriptBuilder;
-use bitcoin::hashes::{hash160, Hash};
-use bitcoin::secp256k1::{Message, Secp256k1};
-use bitcoin::util::bip32::{ChildNumber, DerivationPath, ExtendedPrivKey, Fingerprint};
-use bitcoin::util::{bip143, psbt};
-use bitcoin::{PrivateKey, Script, SigHash, SigHashType};
+use dogecoin::blockdata::opcodes;
+use dogecoin::blockdata::script::Builder as ScriptBuilder;
+use dogecoin::hashes::{hash160, Hash};
+use dogecoin::secp256k1::{Message, Secp256k1};
+use dogecoin::util::bip32::{ChildNumber, DerivationPath, ExtendedPrivKey, Fingerprint};
+use dogecoin::util::{bip143, psbt};
+use dogecoin::{PrivateKey, Script, SigHash, SigHashType};
 
-use miniscript::descriptor::{DescriptorSecretKey, DescriptorSinglePriv, DescriptorXKey, KeyMap};
-use miniscript::{Legacy, MiniscriptKey, Segwitv0};
+use miniscript_doge::descriptor::{DescriptorSecretKey, DescriptorSinglePriv, DescriptorXKey, KeyMap};
+use miniscript_doge::{Legacy, MiniscriptKey, Segwitv0};
 
 use super::utils::SecpCtx;
 use crate::descriptor::XKeyUtils;
@@ -638,11 +638,11 @@ mod signers_container_tests {
     use crate::descriptor;
     use crate::descriptor::IntoWalletDescriptor;
     use crate::keys::{DescriptorKey, IntoDescriptorKey};
-    use bitcoin::secp256k1::{All, Secp256k1};
-    use bitcoin::util::bip32;
-    use bitcoin::util::psbt::PartiallySignedTransaction;
-    use bitcoin::Network;
-    use miniscript::ScriptContext;
+    use dogecoin::secp256k1::{All, Secp256k1};
+    use dogecoin::util::bip32;
+    use dogecoin::util::psbt::PartiallySignedTransaction;
+    use dogecoin::Network;
+    use miniscript_doge::ScriptContext;
     use std::str::FromStr;
 
     fn is_equal(this: &Arc<dyn Signer>, that: &Arc<DummySigner>) -> bool {

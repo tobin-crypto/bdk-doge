@@ -17,18 +17,18 @@
 //! ## Example
 //!
 //! ```no_run
-//! # use bdk::blockchain::esplora::EsploraBlockchain;
+//! # use bdk_doge::blockchain::esplora::EsploraBlockchain;
 //! let blockchain = EsploraBlockchain::new("https://blockstream.info/testnet/api", None, 20);
-//! # Ok::<(), bdk::Error>(())
+//! # Ok::<(), bdk_doge::Error>(())
 //! ```
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
 
-use bitcoin::consensus::{self, deserialize, serialize};
-use bitcoin::hashes::hex::{FromHex, ToHex};
-use bitcoin::hashes::{sha256, Hash};
-use bitcoin::{BlockHash, BlockHeader, Script, Transaction, Txid};
+use dogecoin::consensus::{self, deserialize, serialize};
+use dogecoin::hashes::hex::{FromHex, ToHex};
+use dogecoin::hashes::{sha256, Hash};
+use dogecoin::{BlockHash, BlockHeader, Script, Transaction, Txid};
 use futures::stream::{self, FuturesOrdered, StreamExt, TryStreamExt};
 #[allow(unused_imports)]
 use log::{debug, error, info, trace};
@@ -399,9 +399,9 @@ pub enum EsploraError {
     /// Invalid number returned
     Parsing(std::num::ParseIntError),
     /// Invalid Bitcoin data returned
-    BitcoinEncoding(bitcoin::consensus::encode::Error),
+    BitcoinEncoding(dogecoin::consensus::encode::Error),
     /// Invalid Hex data returned
-    Hex(bitcoin::hashes::hex::Error),
+    Hex(dogecoin::hashes::hex::Error),
 
     /// Transaction not found
     TransactionNotFound(Txid),
@@ -422,7 +422,7 @@ impl std::error::Error for EsploraError {}
 impl_error!(reqwest::Error, Reqwest, EsploraError);
 impl_error!(std::num::ParseIntError, Parsing, EsploraError);
 impl_error!(consensus::encode::Error, BitcoinEncoding, EsploraError);
-impl_error!(bitcoin::hashes::hex::Error, Hex, EsploraError);
+impl_error!(dogecoin::hashes::hex::Error, Hex, EsploraError);
 
 #[cfg(test)]
 #[cfg(feature = "test-esplora")]

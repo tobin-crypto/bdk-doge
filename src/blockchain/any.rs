@@ -21,13 +21,13 @@
 //! assigned to a struct member.
 //!
 //! ```no_run
-//! # use bitcoin::Network;
-//! # use bdk::blockchain::*;
-//! # use bdk::database::MemoryDatabase;
-//! # use bdk::Wallet;
+//! # use dogecoin::Network;
+//! # use bdk_doge::blockchain::*;
+//! # use bdk_doge::database::MemoryDatabase;
+//! # use bdk_doge::Wallet;
 //! # #[cfg(feature = "electrum")]
 //! # {
-//! let electrum_blockchain = ElectrumBlockchain::from(electrum_client::Client::new("...")?);
+//! let electrum_blockchain = ElectrumBlockchain::from(electrum_client_doge::Client::new("...")?);
 //! let wallet_electrum: Wallet<AnyBlockchain, _> = Wallet::new(
 //!     "...",
 //!     None,
@@ -49,17 +49,17 @@
 //! )?;
 //! # }
 //!
-//! # Ok::<(), bdk::Error>(())
+//! # Ok::<(), bdk_doge::Error>(())
 //! ```
 //!
 //! When paired with the use of [`ConfigurableBlockchain`], it allows creating wallets with any
 //! blockchain type supported using a single line of code:
 //!
 //! ```no_run
-//! # use bitcoin::Network;
-//! # use bdk::blockchain::*;
-//! # use bdk::database::MemoryDatabase;
-//! # use bdk::Wallet;
+//! # use dogecoin::Network;
+//! # use bdk_doge::blockchain::*;
+//! # use bdk_doge::database::MemoryDatabase;
+//! # use bdk_doge::Wallet;
 //! let config = serde_json::from_str("...")?;
 //! let blockchain = AnyBlockchain::from_config(&config)?;
 //! let wallet = Wallet::new(
@@ -69,7 +69,7 @@
 //!     MemoryDatabase::default(),
 //!     blockchain,
 //! )?;
-//! # Ok::<(), bdk::Error>(())
+//! # Ok::<(), bdk_doge::Error>(())
 //! ```
 
 use super::*;
@@ -169,7 +169,7 @@ impl_from!(compact_filters::CompactFiltersBlockchain, AnyBlockchain, CompactFilt
 /// ```
 /// # #[cfg(feature = "electrum")]
 /// # {
-/// use bdk::blockchain::{electrum::ElectrumBlockchainConfig, AnyBlockchainConfig};
+/// use bdk_doge::blockchain::{electrum::ElectrumBlockchainConfig, AnyBlockchainConfig};
 /// let config: AnyBlockchainConfig = serde_json::from_str(
 ///     r#"{
 ///    "type" : "electrum",

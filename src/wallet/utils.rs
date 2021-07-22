@@ -9,9 +9,9 @@
 // You may not use this file except in accordance with one or both of these
 // licenses.
 
-use bitcoin::secp256k1::{All, Secp256k1};
+use dogecoin::secp256k1::{All, Secp256k1};
 
-use miniscript::{MiniscriptKey, Satisfier, ToPublicKey};
+use miniscript_doge::{MiniscriptKey, Satisfier, ToPublicKey};
 
 // De-facto standard "dust limit" (even though it should change based on the output type)
 pub const DUST_LIMIT_SATOSHI: u64 = 546;

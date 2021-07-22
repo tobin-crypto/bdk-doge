@@ -18,19 +18,19 @@
 //! ## Example
 //!
 //! ```no_run
-//! # use bdk::blockchain::{RpcConfig, RpcBlockchain, ConfigurableBlockchain};
+//! # use bdk_doge::blockchain::{RpcConfig, RpcBlockchain, ConfigurableBlockchain};
 //! let config = RpcConfig {
 //!     url: "127.0.0.1:18332".to_string(),
 //!     auth: bitcoincore_rpc::Auth::CookieFile("/home/user/.bitcoin/.cookie".into()),
-//!     network: bdk::bitcoin::Network::Testnet,
+//!     network: bdk_doge::dogecoin::Network::Testnet,
 //!     wallet_name: "wallet_name".to_string(),
 //!     skip_blocks: None,
 //! };
 //! let blockchain = RpcBlockchain::from_config(&config);
 //! ```
 
-use crate::bitcoin::consensus::deserialize;
-use crate::bitcoin::{Address, Network, OutPoint, Transaction, TxOut, Txid};
+use crate::dogecoin::consensus::deserialize;
+use crate::dogecoin::{Address, Network, OutPoint, Transaction, TxOut, Txid};
 use crate::blockchain::{Blockchain, Capability, ConfigurableBlockchain, Progress};
 use crate::database::{BatchDatabase, DatabaseUtils};
 use crate::descriptor::{get_checksum, IntoWalletDescriptor};

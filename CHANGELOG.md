@@ -230,7 +230,7 @@ final transaction is created by calling `finish` on the builder.
 - Fix entropy generation
 - Less convoluted entropy generation
 - Re-export tiny-bip39
-- Implement `GeneratableKey` trait for `bitcoin::PrivateKey`
+- Implement `GeneratableKey` trait for `dogecoin::PrivateKey`
 - Implement `ToDescriptorKey` trait for `GeneratedKey`
 - Add a shortcut to generate keys with the default options
 
@@ -317,7 +317,7 @@ final transaction is created by calling `finish` on the builder.
 - Wrap Miniscript descriptors to support xpubs
 - Policy and contribution
 - Transform a descriptor into its "public" version
-- Use `miniscript::DescriptorPublicKey`
+- Use `miniscript_doge::DescriptorPublicKey`
 
 ### Macros
 #### Added

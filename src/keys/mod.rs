@@ -17,18 +17,18 @@ use std::marker::PhantomData;
 use std::ops::Deref;
 use std::str::FromStr;
 
-use bitcoin::secp256k1::{self, Secp256k1, Signing};
+use dogecoin::secp256k1::{self, Secp256k1, Signing};
 
-use bitcoin::util::bip32;
-use bitcoin::{Network, PrivateKey, PublicKey};
+use dogecoin::util::bip32;
+use dogecoin::{Network, PrivateKey, PublicKey};
 
-use miniscript::descriptor::{Descriptor, DescriptorXKey, Wildcard};
-pub use miniscript::descriptor::{
+use miniscript_doge::descriptor::{Descriptor, DescriptorXKey, Wildcard};
+pub use miniscript_doge::descriptor::{
     DescriptorPublicKey, DescriptorSecretKey, DescriptorSinglePriv, DescriptorSinglePub, KeyMap,
     SortedMultiVec,
 };
-pub use miniscript::ScriptContext;
-use miniscript::{Miniscript, Terminal};
+pub use miniscript_doge::ScriptContext;
+use miniscript_doge::{Miniscript, Terminal};
 
 use crate::descriptor::{CheckMiniscript, DescriptorError};
 use crate::wallet::utils::SecpCtx;
@@ -94,7 +94,7 @@ impl<Ctx: ScriptContext> DescriptorKey<Ctx> {
         }
     }
 
-    // This method is used internally by `bdk::fragment!` and `bdk::descriptor!`. It has to be
+    // This method is used internally by `bdk_doge::fragment!` and `bdk_doge::descriptor!`. It has to be
     // public because it is effectively called by external crates, once the macros are expanded,
     // but since it is not meant to be part of the public api we hide it from the docs.
     #[doc(hidden)]
@@ -111,7 +111,7 @@ impl<Ctx: ScriptContext> DescriptorKey<Ctx> {
 
                 let public = secret
                     .as_public(secp)
-                    .map_err(|e| miniscript::Error::Unexpected(e.to_string()))?;
+                    .map_err(|e| miniscript_doge::Error::Unexpected(e.to_string()))?;
                 key_map.insert(public.clone(), secret);
 
                 Ok((public, key_map, valid_networks))
@@ -146,12 +146,12 @@ pub trait ExtScriptContext: ScriptContext {
     /// Returns the [`ScriptContext`] as a [`ScriptContextEnum`]
     fn as_enum() -> ScriptContextEnum;
 
-    /// Returns whether the script context is [`Legacy`](miniscript::Legacy)
+    /// Returns whether the script context is [`Legacy`](miniscript_doge::Legacy)
     fn is_legacy() -> bool {
         Self::as_enum().is_legacy()
     }
 
-    /// Returns whether the script context is [`Segwitv0`](miniscript::Segwitv0)
+    /// Returns whether the script context is [`Segwitv0`](miniscript_doge::Segwitv0)
     fn is_segwit_v0() -> bool {
         Self::as_enum().is_segwit_v0()
     }
@@ -160,8 +160,8 @@ pub trait ExtScriptContext: ScriptContext {
 impl<Ctx: ScriptContext + 'static> ExtScriptContext for Ctx {
     fn as_enum() -> ScriptContextEnum {
         match TypeId::of::<Ctx>() {
-            t if t == TypeId::of::<miniscript::Legacy>() => ScriptContextEnum::Legacy,
-            t if t == TypeId::of::<miniscript::Segwitv0>() => ScriptContextEnum::Segwitv0,
+            t if t == TypeId::of::<miniscript_doge::Legacy>() => ScriptContextEnum::Legacy,
+            t if t == TypeId::of::<miniscript_doge::Segwitv0>() => ScriptContextEnum::Segwitv0,
             _ => unimplemented!("Unknown ScriptContext type"),
         }
     }
@@ -190,9 +190,9 @@ impl<Ctx: ScriptContext + 'static> ExtScriptContext for Ctx {
 /// Key type valid in any context:
 ///
 /// ```
-/// use bdk::bitcoin::PublicKey;
+/// use bdk_doge::dogecoin::PublicKey;
 ///
-/// use bdk::keys::{DescriptorKey, IntoDescriptorKey, KeyError, ScriptContext};
+/// use bdk_doge::keys::{DescriptorKey, IntoDescriptorKey, KeyError, ScriptContext};
 ///
 /// pub struct MyKeyType {
 ///     pubkey: PublicKey,
@@ -208,9 +208,9 @@ impl<Ctx: ScriptContext + 'static> ExtScriptContext for Ctx {
 /// Key type that is only valid on mainnet:
 ///
 /// ```
-/// use bdk::bitcoin::PublicKey;
+/// use bdk_doge::dogecoin::PublicKey;
 ///
-/// use bdk::keys::{
+/// use bdk_doge::keys::{
 ///     mainnet_network, DescriptorKey, DescriptorPublicKey, DescriptorSinglePub,
 ///     IntoDescriptorKey, KeyError, ScriptContext,
 /// };
@@ -235,9 +235,9 @@ impl<Ctx: ScriptContext + 'static> ExtScriptContext for Ctx {
 /// Key type that internally encodes in which context it's valid. The context is checked at runtime:
 ///
 /// ```
-/// use bdk::bitcoin::PublicKey;
+/// use bdk_doge::dogecoin::PublicKey;
 ///
-/// use bdk::keys::{DescriptorKey, ExtScriptContext, IntoDescriptorKey, KeyError, ScriptContext};
+/// use bdk_doge::keys::{DescriptorKey, ExtScriptContext, IntoDescriptorKey, KeyError, ScriptContext};
 ///
 /// pub struct MyKeyType {
 ///     is_legacy: bool,
@@ -255,7 +255,7 @@ impl<Ctx: ScriptContext + 'static> ExtScriptContext for Ctx {
 /// }
 /// ```
 ///
-/// Key type that can only work within [`miniscript::Segwitv0`] context. Only the specialized version
+/// Key type that can only work within [`miniscript_doge::Segwitv0`] context. Only the specialized version
 /// of the trait is implemented.
 ///
 /// This example deliberately fails to compile, to demonstrate how the compiler can catch when keys
@@ -263,17 +263,17 @@ impl<Ctx: ScriptContext + 'static> ExtScriptContext for Ctx {
 /// makes the compiler (correctly) fail.
 ///
 /// ```compile_fail
-/// use bdk::bitcoin::PublicKey;
+/// use bdk_doge::dogecoin::PublicKey;
 /// use std::str::FromStr;
 ///
-/// use bdk::keys::{DescriptorKey, IntoDescriptorKey, KeyError};
+/// use bdk_doge::keys::{DescriptorKey, IntoDescriptorKey, KeyError};
 ///
 /// pub struct MySegwitOnlyKeyType {
 ///     pubkey: PublicKey,
 /// }
 ///
-/// impl IntoDescriptorKey<bdk::miniscript::Segwitv0> for MySegwitOnlyKeyType {
-///     fn into_descriptor_key(self) -> Result<DescriptorKey<bdk::miniscript::Segwitv0>, KeyError> {
+/// impl IntoDescriptorKey<bdk_doge::miniscript_doge::Segwitv0> for MySegwitOnlyKeyType {
+///     fn into_descriptor_key(self) -> Result<DescriptorKey<bdk_doge::miniscript_doge::Segwitv0>, KeyError> {
 ///         self.pubkey.into_descriptor_key()
 ///     }
 /// }
@@ -281,7 +281,7 @@ impl<Ctx: ScriptContext + 'static> ExtScriptContext for Ctx {
 /// let key = MySegwitOnlyKeyType {
 ///     pubkey: PublicKey::from_str("...")?,
 /// };
-/// let (descriptor, _, _) = bdk::descriptor!(pkh(key))?;
+/// let (descriptor, _, _) = bdk_doge::descriptor!(pkh(key))?;
 /// //                                       ^^^^^ changing this to `wpkh` would make it compile
 ///
 /// # Ok::<_, Box<dyn std::error::Error>>(())
@@ -296,8 +296,8 @@ pub trait IntoDescriptorKey<Ctx: ScriptContext>: Sized {
 /// An instance of [`ExtendedKey`] can be constructed from an [`ExtendedPrivKey`](bip32::ExtendedPrivKey)
 /// or an [`ExtendedPubKey`](bip32::ExtendedPubKey) by using the `From` trait.
 ///
-/// Defaults to the [`Legacy`](miniscript::Legacy) context.
-pub enum ExtendedKey<Ctx: ScriptContext = miniscript::Legacy> {
+/// Defaults to the [`Legacy`](miniscript_doge::Legacy) context.
+pub enum ExtendedKey<Ctx: ScriptContext = miniscript_doge::Legacy> {
     /// A private extended key, aka an `xprv`
     Private((bip32::ExtendedPrivKey, PhantomData<Ctx>)),
     /// A public extended key, aka an `xpub`
@@ -329,7 +329,7 @@ impl<Ctx: ScriptContext> ExtendedKey<Ctx> {
     /// given [`Network`]
     pub fn into_xpub<C: Signing>(
         self,
-        network: bitcoin::Network,
+        network: dogecoin::Network,
         secp: &Secp256k1<C>,
     ) -> bip32::ExtendedPubKey {
         let mut xpub = match self {
@@ -371,14 +371,14 @@ impl<Ctx: ScriptContext> From<bip32::ExtendedPrivKey> for ExtendedKey<Ctx> {
 /// an [`ExtendedPubKey`] can implement only the required `into_extended_key()` method.
 ///
 /// ```
-/// use bdk::bitcoin;
-/// use bdk::bitcoin::util::bip32;
-/// use bdk::keys::{DerivableKey, ExtendedKey, KeyError, ScriptContext};
+/// use bdk_doge::bitcoin;
+/// use bdk_doge::dogecoin::util::bip32;
+/// use bdk_doge::keys::{DerivableKey, ExtendedKey, KeyError, ScriptContext};
 ///
 /// struct MyCustomKeyType {
-///     key_data: bitcoin::PrivateKey,
+///     key_data: dogecoin::PrivateKey,
 ///     chain_code: Vec<u8>,
-///     network: bitcoin::Network,
+///     network: dogecoin::Network,
 /// }
 ///
 /// impl<Ctx: ScriptContext> DerivableKey<Ctx> for MyCustomKeyType {
@@ -397,26 +397,26 @@ impl<Ctx: ScriptContext> From<bip32::ExtendedPrivKey> for ExtendedKey<Ctx> {
 /// }
 /// ```
 ///
-/// Types that don't internally encode the [`Network`](bitcoin::Network) in which they are valid need some extra
+/// Types that don't internally encode the [`Network`](dogecoin::Network) in which they are valid need some extra
 /// steps to override the set of valid networks, otherwise only the network specified in the
 /// [`ExtendedPrivKey`] or [`ExtendedPubKey`] will be considered valid.
 ///
 /// ```
-/// use bdk::bitcoin;
-/// use bdk::bitcoin::util::bip32;
-/// use bdk::keys::{
+/// use bdk_doge::bitcoin;
+/// use bdk_doge::dogecoin::util::bip32;
+/// use bdk_doge::keys::{
 ///     any_network, DerivableKey, DescriptorKey, ExtendedKey, KeyError, ScriptContext,
 /// };
 ///
 /// struct MyCustomKeyType {
-///     key_data: bitcoin::PrivateKey,
+///     key_data: dogecoin::PrivateKey,
 ///     chain_code: Vec<u8>,
 /// }
 ///
 /// impl<Ctx: ScriptContext> DerivableKey<Ctx> for MyCustomKeyType {
 ///     fn into_extended_key(self) -> Result<ExtendedKey<Ctx>, KeyError> {
 ///         let xprv = bip32::ExtendedPrivKey {
-///             network: bitcoin::Network::Bitcoin, // pick an arbitrary network here
+///             network: dogecoin::Network::Bitcoin, // pick an arbitrary network here
 ///             depth: 0,
 ///             parent_fingerprint: bip32::Fingerprint::default(),
 ///             private_key: self.key_data,
@@ -445,7 +445,7 @@ impl<Ctx: ScriptContext> From<bip32::ExtendedPrivKey> for ExtendedKey<Ctx> {
 /// [`DerivationPath`]: (bip32::DerivationPath)
 /// [`ExtendedPrivKey`]: (bip32::ExtendedPrivKey)
 /// [`ExtendedPubKey`]: (bip32::ExtendedPubKey)
-pub trait DerivableKey<Ctx: ScriptContext = miniscript::Legacy>: Sized {
+pub trait DerivableKey<Ctx: ScriptContext = miniscript_doge::Legacy>: Sized {
     /// Consume `self` and turn it into an [`ExtendedKey`]
     ///
     /// This can be used to get direct access to `xprv`s and `xpub`s for types that implement this trait,
@@ -454,9 +454,9 @@ pub trait DerivableKey<Ctx: ScriptContext = miniscript::Legacy>: Sized {
         feature = "keys-bip39",
         doc = r##"
 ```rust
-use bdk::bitcoin::Network;
-use bdk::keys::{DerivableKey, ExtendedKey};
-use bdk::keys::bip39::{Mnemonic, Language};
+use bdk_doge::dogecoin::Network;
+use bdk_doge::keys::{DerivableKey, ExtendedKey};
+use bdk_doge::keys::bip39::{Mnemonic, Language};
 
 # fn main() -> Result<(), Box<dyn std::error::Error>> {
 let xkey: ExtendedKey =
@@ -739,7 +739,7 @@ fn expand_multi_keys<Pk: IntoDescriptorKey<Ctx>, Ctx: ScriptContext>(
     Ok((pks, key_map, valid_networks))
 }
 
-// Used internally by `bdk::fragment!` to build `pk_k()` fragments
+// Used internally by `bdk_doge::fragment!` to build `pk_k()` fragments
 #[doc(hidden)]
 pub fn make_pk<Pk: IntoDescriptorKey<Ctx>, Ctx: ScriptContext>(
     descriptor_key: Pk,
@@ -753,7 +753,7 @@ pub fn make_pk<Pk: IntoDescriptorKey<Ctx>, Ctx: ScriptContext>(
     Ok((minisc, key_map, valid_networks))
 }
 
-// Used internally by `bdk::fragment!` to build `multi()` fragments
+// Used internally by `bdk_doge::fragment!` to build `multi()` fragments
 #[doc(hidden)]
 pub fn make_multi<Pk: IntoDescriptorKey<Ctx>, Ctx: ScriptContext>(
     thresh: usize,
@@ -768,7 +768,7 @@ pub fn make_multi<Pk: IntoDescriptorKey<Ctx>, Ctx: ScriptContext>(
     Ok((minisc, key_map, valid_networks))
 }
 
-// Used internally by `bdk::descriptor!` to build `sortedmulti()` fragments
+// Used internally by `bdk_doge::descriptor!` to build `sortedmulti()` fragments
 #[doc(hidden)]
 pub fn make_sortedmulti<Pk, Ctx, F>(
     thresh: usize,
@@ -790,7 +790,7 @@ where
     Ok((descriptor, key_map, valid_networks))
 }
 
-/// The "identity" conversion is used internally by some `bdk::fragment`s
+/// The "identity" conversion is used internally by some `bdk_doge::fragment`s
 impl<Ctx: ScriptContext> IntoDescriptorKey<Ctx> for DescriptorKey<Ctx> {
     fn into_descriptor_key(self) -> Result<DescriptorKey<Ctx>, KeyError> {
         Ok(self)
@@ -873,13 +873,13 @@ pub enum KeyError {
     Message(String),
 
     /// BIP32 error
-    Bip32(bitcoin::util::bip32::Error),
+    Bip32(dogecoin::util::bip32::Error),
     /// Miniscript error
-    Miniscript(miniscript::Error),
+    Miniscript(miniscript_doge::Error),
 }
 
-impl_error!(miniscript::Error, Miniscript, KeyError);
-impl_error!(bitcoin::util::bip32::Error, Bip32, KeyError);
+impl_error!(miniscript_doge::Error, Miniscript, KeyError);
+impl_error!(dogecoin::util::bip32::Error, Bip32, KeyError);
 
 impl std::fmt::Display for KeyError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -891,7 +891,7 @@ impl std::error::Error for KeyError {}
 
 #[cfg(test)]
 pub mod test {
-    use bitcoin::util::bip32;
+    use dogecoin::util::bip32;
 
     use super::*;
 
@@ -899,7 +899,7 @@ pub mod test {
 
     #[test]
     fn test_keys_generate_xprv() {
-        let generated_xprv: GeneratedKey<_, miniscript::Segwitv0> =
+        let generated_xprv: GeneratedKey<_, miniscript_doge::Segwitv0> =
             bip32::ExtendedPrivKey::generate_with_entropy_default(TEST_ENTROPY).unwrap();
 
         assert_eq!(generated_xprv.valid_networks, any_network());
@@ -908,8 +908,8 @@ pub mod test {
 
     #[test]
     fn test_keys_generate_wif() {
-        let generated_wif: GeneratedKey<_, miniscript::Segwitv0> =
-            bitcoin::PrivateKey::generate_with_entropy_default(TEST_ENTROPY).unwrap();
+        let generated_wif: GeneratedKey<_, miniscript_doge::Segwitv0> =
+            dogecoin::PrivateKey::generate_with_entropy_default(TEST_ENTROPY).unwrap();
 
         assert_eq!(generated_wif.valid_networks, any_network());
         assert_eq!(

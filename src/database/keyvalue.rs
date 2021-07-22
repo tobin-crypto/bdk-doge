@@ -13,9 +13,9 @@ use std::convert::TryInto;
 
 use sled::{Batch, Tree};
 
-use bitcoin::consensus::encode::{deserialize, serialize};
-use bitcoin::hash_types::Txid;
-use bitcoin::{OutPoint, Script, Transaction};
+use dogecoin::consensus::encode::{deserialize, serialize};
+use dogecoin::hash_types::Txid;
+use dogecoin::{OutPoint, Script, Transaction};
 
 use crate::database::memory::MapKey;
 use crate::database::{BatchDatabase, BatchOperations, Database};
