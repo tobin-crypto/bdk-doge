@@ -39,7 +39,9 @@ git = "https://github.com/tobin-crypto/rust-dogecoin"
 features = ["use-serde", "base64"]
 
 [dependencies.electrum-client-doge]
-git = "https://github.com/tobin-crypto/rust-electrum-client-doge"
+# git = "https://github.com/tobin-crypto/rust-electrum-client-doge"
+path = "../rust-electrum-client-doge"
+default-features = false
 optional = true
 
 [dependencies.miniscript-doge]

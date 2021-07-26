@@ -31,7 +31,7 @@ use log::{debug, error, info, trace};
 
 use dogecoin::{BlockHeader, Script, Transaction, Txid};
 
-use electrum_client_doge::{Client, ConfigBuilder, ElectrumApi, Socks5Config};
+use electrum_client_doge::{Client, ConfigBuilder, ElectrumApi};
 
 use self::utils::{ElectrumLikeSync, ElsGetHistoryRes};
 use super::*;
@@ -162,11 +162,12 @@ impl ConfigurableBlockchain for ElectrumBlockchain {
     type Config = ElectrumBlockchainConfig;
 
     fn from_config(config: &Self::Config) -> Result<Self, Error> {
-        let socks5 = config.socks5.as_ref().map(Socks5Config::new);
+        if config.socks5.is_some() {
+            panic!("socks5 proxy not supported");
+        }
         let electrum_config = ConfigBuilder::new()
             .retry(config.retry)
             .timeout(config.timeout)?
-            .socks5(socks5)?
             .build();
 
         Ok(ElectrumBlockchain {
